@@ -1,6 +1,6 @@
 "use client";
 import Head from "next/head";
-import React from 'react';
+import React, { useState } from 'react';
 import Brand from "@/components/Brand";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -8,6 +8,100 @@ import Navbar from "@/components/Navbar";
 import Select from "@/components/ui/Select";
 
 export default function index() {
+  const [nombreEstudiante, setnombreEstudiante] = useState<string | null>(null);
+  const [fechaNacimiento, setfechaNacimiento] = useState<string | null>(null);
+  const [edad, setedad] = useState<string | null>(null);
+  const [sexo, setsexo] = useState<string | null>(null);
+  const [cedula, setcedula] = useState<string | null>(null);
+  const [telefono, settelefono] = useState<string | null>(null);
+  const [institucion, setinstitucion] = useState<string | null>(null);
+  const [ocupacion, setocupacion] = useState<string | null>(null);
+  const [profesion, setprofesion] = useState<string | null>(null);
+  const [lugarTrabajo, setlugarTrabajo] = useState<string | null>(null);
+  const [direccion, setdireccion] = useState<string | null>(null);
+  const [email, setemail] = useState<string | null>(null);
+  const [alergias, setalergias] = useState<string | null>(null);
+  const [antecedentes, setantecedentes] = useState<string | null>(null);
+  const [alergiasEspecificadas, setalergiasEspecificadas] = useState<string | null>(null);
+  const [contactoEmergencia, setcontactoEmergencia] = useState<string | null>(null);
+  const [numeroEmergencia, setnumeroEmergencia] = useState<string | null>(null);
+  const [representanteNombre, setrepresentanteNombre] = useState<string | null>(null);
+  const [representanteCI, setrepresentanteCI] = useState<string | null>(null);
+  const [parentesco, setparentesco] = useState<string | null>(null);
+  const [representanteTelefono, setrepresentanteTelefono] = useState<string | null>(null);
+  const [representanteOcupacion, setrepresentanteOcupacion] = useState<string | null>(null);
+  const [representanteProfesion, setrepresentanteProfesion] = useState<string | null>(null);
+  const [representanteLugarTrabajo, setrepresentanteLugarTrabajo] = useState<string | null>(null);
+  const [representanteDireccion, setrepresentanteDireccion] = useState<string | null>(null);
+  const [representanteEmail, setrepresentanteEmail] = useState<string | null>(null);
+  const [instrumentos, setinstrumentos] = useState<string | null>(null);
+  const [teoricas, setteoricas] = useState<string | null>(null);
+  const [otros, setotros] = useState<string | null>(null);
+  const [autorizacion, setautorizacion] = useState<string | null>(null);
+
+  const handleGenerarPDF = async (): Promise<void> => {
+    try {
+      const res = await fetch("/api/pdf_registro", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+    nombreEstudiante: nombreEstudiante,
+    fechaNacimiento: fechaNacimiento,
+    edad: edad,
+    sexo: sexo,
+    cedula: cedula,
+    telefono: telefono,
+    institucion: institucion,
+    ocupacion: ocupacion,
+    profesion: profesion,
+    lugarTrabajo: lugarTrabajo,
+    direccion: direccion,
+    email: email,
+    alergias: alergias,
+    antecedentes: antecedentes,
+    alergiasEspecificadas:alergiasEspecificadas,
+    contactoEmergencia:contactoEmergencia,
+    numeroEmergencia:numeroEmergencia,
+
+    representanteNombre: representanteNombre,
+    representanteCI: representanteCI,
+    parentesco: parentesco,
+    representanteTelefono: representanteTelefono,
+    representanteOcupacion: representanteOcupacion,
+    representanteProfesion: representanteProfesion,
+    representanteLugarTrabajo:representanteLugarTrabajo,
+    representanteDireccion: representanteDireccion,
+    representanteEmail: representanteEmail,
+
+    instrumentos: instrumentos,
+    teoricas: teoricas,
+    otros: otros,
+    autorizacion:autorizacion,
+    firmaCedula: "Prueba de firma y cédula",
+  }),
+      })
+
+      if (!res.ok) throw new Error("Error generando PDF")
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      window.open(url, "_blank")
+
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `planilla-${Date.now()}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error("Error al generar PDF:", error)
+    }
+  }
+
   return (
     <>
       <Head>
@@ -67,6 +161,7 @@ export default function index() {
                   type='text'
                   required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setnombreEstudiante(e.target.value)}
                 />
               </div>
             </div>
@@ -82,6 +177,7 @@ export default function index() {
                   max={new Date().toISOString().split('T')[0]}
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={e => {
+                    setfechaNacimiento(e.target.value);
                     const fecha = e.target.value;
                     const edadInput = document.getElementById('edad-estudiante') as HTMLInputElement | null;
                     if (fecha) {
@@ -112,6 +208,7 @@ export default function index() {
                   readOnly
                   className='w-full mt-3 focus:border-blue-600 bg-gray-100'
                   tabIndex={-1}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setedad(e.target.value)}
                 />
               </div>
             </div>
@@ -122,6 +219,7 @@ export default function index() {
                 <label className='font-medium'>Sexo</label>
                 <Select
                   required
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setsexo(e.target.value)}
                   className='w-full mt-3 border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                 >
                   <option value=''>Seleccione una opción</option>
@@ -133,8 +231,9 @@ export default function index() {
                 <label className='font-medium'>C.I.:</label>
                 <Input
                   type='text'
-                  required
+                  
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setcedula(e.target.value)}
                 />
               </div>
             </div>
@@ -147,6 +246,7 @@ export default function index() {
                   type='tel'
                   required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => settelefono(e.target.value)}
                 />
               </div>
             </div>
@@ -157,16 +257,16 @@ export default function index() {
                 <label className='font-medium'>Institución Educacional</label>
                 <Input
                   type='text'
-                  required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setinstitucion(e.target.value)}
                 />
               </div>
               <div className='flex-1 w-full'>
                 <label className='font-medium'>Ocupación</label>
                 <Input
                   type='text'
-                  required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setocupacion(e.target.value)}
                 />
               </div>
             </div>
@@ -177,7 +277,7 @@ export default function index() {
                 <label className='font-medium'>Profesión</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setprofesion(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -185,7 +285,7 @@ export default function index() {
                 <label className='font-medium'>Lugar de Trabajo</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setlugarTrabajo(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -199,6 +299,7 @@ export default function index() {
                   type='text'
                   required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setdireccion(e.target.value)}
                 />
               </div>
             </div>
@@ -209,8 +310,9 @@ export default function index() {
                 <label className='font-medium'>E-mail</label>
                 <Input
                   type='email'
-                  required
+                  
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setemail(e.target.value)}
                 />
               </div>
             </div>
@@ -223,6 +325,7 @@ export default function index() {
                   type='text'
                   required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setalergias(e.target.value)}
                 />
               </div>
             </div>
@@ -238,6 +341,7 @@ export default function index() {
                     value='si'
                     required
                     className='form-radio text-blue-600'
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setantecedentes(e.target.value)}
                   />
                   <span className='ml-2'>Sí</span>
                 </label>
@@ -248,6 +352,7 @@ export default function index() {
                     value='no'
                     required
                     className='form-radio text-blue-600'
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setantecedentes(e.target.value)}
                   />
                   <span className='ml-2'>No</span>
                 </label>
@@ -257,7 +362,7 @@ export default function index() {
               <label className='font-medium'>Especifique (anexar informe correspondiente)</label>
               <Input
                 type='text'
-                required
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setalergiasEspecificadas(e.target.value)}
                 className='w-full mt-3 focus:border-blue-600'
               />
             </div>
@@ -268,6 +373,7 @@ export default function index() {
                   type='text'
                   required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setcontactoEmergencia(e.target.value)}
                 />
               </div>
               <div className='flex-1 w-full'>
@@ -276,6 +382,7 @@ export default function index() {
                   type='tel'
                   required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setnumeroEmergencia(e.target.value)}
                 />
               </div>
             </div>
@@ -287,7 +394,7 @@ export default function index() {
                 <label className='font-medium'>Nombres y Apellidos</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteNombre(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -297,7 +404,7 @@ export default function index() {
                 <label className='font-medium'>C.I.:</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteCI(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -305,7 +412,7 @@ export default function index() {
                 <label className='font-medium'>Parentesco</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setparentesco(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -315,7 +422,7 @@ export default function index() {
                 <label className='font-medium'>Teléfono Celular</label>
                 <Input
                   type='tel'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteTelefono(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -323,7 +430,7 @@ export default function index() {
                 <label className='font-medium'>Ocupación</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteOcupacion(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -333,7 +440,7 @@ export default function index() {
                 <label className='font-medium'>Profesión</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteProfesion(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -341,7 +448,7 @@ export default function index() {
                 <label className='font-medium'>Lugar de Trabajo</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteLugarTrabajo(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -351,7 +458,7 @@ export default function index() {
                 <label className='font-medium'>Dirección Residencial</label>
                 <Input
                   type='text'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteDireccion(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -361,7 +468,7 @@ export default function index() {
                 <label className='font-medium'>E-mail</label>
                 <Input
                   type='email'
-                  required
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteEmail(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                 />
               </div>
@@ -528,6 +635,7 @@ export default function index() {
                     value='si'
                     required
                     className='form-radio text-blue-600'
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setautorizacion(e.target.value)}
                   />
                   <span className='ml-2'>Sí</span>
                 </label>
@@ -538,6 +646,7 @@ export default function index() {
                     value='no'
                     required
                     className='form-radio text-blue-600'
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setautorizacion(e.target.value)}
                   />
                   <span className='ml-2'>No</span>
                 </label>
@@ -547,6 +656,9 @@ export default function index() {
               className='w-full text-white bg-blue-600 hover:bg-blue-500 ring-offset-2 ring-blue-600 focus:ring shadow rounded-lg'>
               Inscribir
             </Button>
+            <button onClick={handleGenerarPDF} className="bg-blue-600 text-white px-4 py-2 rounded">
+              Descargar planilla PDF
+            </button>
           </form>
         </div>
       </div>

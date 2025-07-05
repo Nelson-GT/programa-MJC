@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.0",
     "mysql2": "^3.14.1",
     "next": "15.3.5",
     "react": "^19.0.0",

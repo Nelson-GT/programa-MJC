@@ -44,10 +44,10 @@ const Navbar = () => {
                 : 'hidden'
             }`}
         >
-            <div className="custom-screen gap-x-20 items-center md:flex">
+            <div className="custom-screen gap-x-20 items-center ml-10 md:flex">
             <NavHeader state={state} onClick={() => setState(!state)} />
             <div
-                className={`flex-1 items-center mt-8 text-gray-600 md:font-medium md:mt-0 md:flex ${
+                className={`flex-1 items-center mt-8 mr-10 text-gray-600 md:font-medium md:mt-0 md:flex ${
                 state ? 'block' : 'hidden'
                 }`}
             >

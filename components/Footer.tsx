@@ -8,7 +8,7 @@ const navigation = [
 ]
 
 const Footer = () => (
-    <footer className="pt-32 sm:pt-44">
+    <footer className="pt-32 mx-5 md:mx-10 sm:pt-44">
         <div className="custom-screen text-gray-600">
             <div className="flex flex-wrap gap-y-10 items-center justify-between">
                 <div className="space-y-4">
@@ -17,7 +17,7 @@ const Footer = () => (
                     </Link>
                     <h2 className="text-gray-800 text-lg font-semibold sm:text-2xl">Propuesta de página</h2>
                     <p className="max-w-md">
-                        Propuesta Elaborada por: Nelson Guerrero (6/2025).
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate, minus.
                     </p>
                     <div className="pt-2 flex items-center gap-x-6 text-gray-400">
                         <a href="https://www.facebook.com/sinfonicarabobo" target="_blank" aria-label="Social media">

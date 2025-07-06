@@ -5,10 +5,10 @@ import NavLink from "@/components/ui/NavLink"
 const AUDI = () => {
     return (
         <SectionWrapper id="cta" className="overflow-hidden"> 
-            <div className="custom-screen flex flex-col-reverse gap-x-12 justify-between md:flex-row md:items-center">
+            <div className="custom-screen flex flex-col-reverse gap-x-12 justify-between md:flex-row md:items-center mx-5 md:mx-20">
                 <div className="flex-none max-w-xl mt-12 space-y-3 md:mt-0">
                     <h2 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
-                       Inscripciones Abiertas | Temporada de Audiciones 2025 - Orquesta Sinfónica de Carabobo
+                        Inscripciones Abiertas | Temporada de Audiciones 2025 - Orquesta Sinfónica de Carabobo
                     </h2>
                     <p className="text-gray-600">
                         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure impedit provident, cupiditate nobis quos quis excepturi deleniti, iusto asperiores atque mollitia corporis perspiciatis? Animi, obcaecati nemo consequatur deserunt incidunt ex.

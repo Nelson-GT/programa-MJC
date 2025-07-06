@@ -4,7 +4,7 @@ import NavLink from "@/components/ui/NavLink"
 
 const CTA = () => {
     return (
-        <SectionWrapper id="cta" className="overflow-hidden"> 
+        <SectionWrapper id="cta" className="overflow-hidden p-30"> 
             <div className="custom-screen flex flex-col-reverse gap-x-12 justify-between md:flex-row md:items-center">
                 <div className="flex-none max-w-xl mt-12 space-y-3 md:mt-0">
                     <h2 className="text-gray-800 text-3xl font-semibold sm:text-4xl">

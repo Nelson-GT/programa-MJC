@@ -39,6 +39,19 @@ export default function index() {
   const [otros, setotros] = useState<string | null>(null);
   const [autorizacion, setautorizacion] = useState<string | null>(null);
 
+  const [photo, setPhoto] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      setPhoto(file);
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+    }
+  }
+
+
   const handleGenerarPDF = async (): Promise<void> => {
     try {
       const res = await fetch("/api/pdf_registro", {
@@ -47,40 +60,40 @@ export default function index() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-    nombreEstudiante: nombreEstudiante,
-    fechaNacimiento: fechaNacimiento,
-    edad: edad,
-    sexo: sexo,
-    cedula: cedula,
-    telefono: telefono,
-    institucion: institucion,
-    ocupacion: ocupacion,
-    profesion: profesion,
-    lugarTrabajo: lugarTrabajo,
-    direccion: direccion,
-    email: email,
-    alergias: alergias,
-    antecedentes: antecedentes,
-    alergiasEspecificadas:alergiasEspecificadas,
-    contactoEmergencia:contactoEmergencia,
-    numeroEmergencia:numeroEmergencia,
+          nombreEstudiante: nombreEstudiante,
+          fechaNacimiento: fechaNacimiento,
+          edad: edad,
+          sexo: sexo,
+          cedula: cedula,
+          telefono: telefono,
+          institucion: institucion,
+          ocupacion: ocupacion,
+          profesion: profesion,
+          lugarTrabajo: lugarTrabajo,
+          direccion: direccion,
+          email: email,
+          alergias: alergias,
+          antecedentes: antecedentes,
+          alergiasEspecificadas:alergiasEspecificadas,
+          contactoEmergencia:contactoEmergencia,
+          numeroEmergencia:numeroEmergencia,
 
-    representanteNombre: representanteNombre,
-    representanteCI: representanteCI,
-    parentesco: parentesco,
-    representanteTelefono: representanteTelefono,
-    representanteOcupacion: representanteOcupacion,
-    representanteProfesion: representanteProfesion,
-    representanteLugarTrabajo:representanteLugarTrabajo,
-    representanteDireccion: representanteDireccion,
-    representanteEmail: representanteEmail,
+          representanteNombre: representanteNombre,
+          representanteCI: representanteCI,
+          parentesco: parentesco,
+          representanteTelefono: representanteTelefono,
+          representanteOcupacion: representanteOcupacion,
+          representanteProfesion: representanteProfesion,
+          representanteLugarTrabajo:representanteLugarTrabajo,
+          representanteDireccion: representanteDireccion,
+          representanteEmail: representanteEmail,
 
-    instrumentos: instrumentos,
-    teoricas: teoricas,
-    otros: otros,
-    autorizacion:autorizacion,
-    firmaCedula: "Prueba de firma y cédula",
-  }),
+          instrumentos: instrumentos,
+          teoricas: teoricas,
+          otros: otros,
+          autorizacion:autorizacion,
+          firmaCedula: "Prueba de firma y cédula",
+        }),
       })
 
       if (!res.ok) throw new Error("Error generando PDF")
@@ -132,16 +145,19 @@ export default function index() {
             <h3 className='text-gray-800 text-2xl font-bold sm:text-xl'>Datos del Estudiante</h3>
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
               <div className="flex flex-col items-center">
-                <div className="w-32 h-40 bg-gray-200 border-2 border-gray-400 rounded-lg flex items-center justify-center overflow-hidden">
-                  {/* Aquí se puede mostrar la foto seleccionada o un ícono de placeholder */}
-                  <span className="text-gray-400 text-sm">Foto</span>
+                <div className="w-32 h-40 bg-gray-200 border-2 border-gray-400 rounded-lg overflow-hidden">
+                  {previewUrl ? (
+                    <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-400 text-sm">Foto</div>
+                  )}
                 </div>
                 <label className="mt-2 block text-center text-sm font-medium text-gray-700">
                   <input
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    // onChange={handlePhotoChange} // Puedes implementar la lógica para mostrar la foto
+                    onChange={handlePhotoChange} // Puedes implementar la lógica para mostrar la foto
                   />
                   <span className="cursor-pointer text-blue-600 hover:underline">Subir foto</span>
                 </label>
@@ -231,7 +247,6 @@ export default function index() {
                 <label className='font-medium'>C.I.:</label>
                 <Input
                   type='text'
-                  
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setcedula(e.target.value)}
                 />
@@ -244,7 +259,6 @@ export default function index() {
                 <label className='font-medium'>Teléfono Celular</label>
                 <Input
                   type='tel'
-                  required
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => settelefono(e.target.value)}
                 />
@@ -310,7 +324,7 @@ export default function index() {
                 <label className='font-medium'>E-mail</label>
                 <Input
                   type='email'
-                  
+                  required
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setemail(e.target.value)}
                 />

@@ -34,11 +34,45 @@ export default function index() {
   const [representanteLugarTrabajo, setrepresentanteLugarTrabajo] = useState<string | null>(null);
   const [representanteDireccion, setrepresentanteDireccion] = useState<string | null>(null);
   const [representanteEmail, setrepresentanteEmail] = useState<string | null>(null);
-  const [instrumentos, setinstrumentos] = useState<string | null>(null);
-  const [teoricas, setteoricas] = useState<string | null>(null);
-  const [otros, setotros] = useState<string | null>(null);
   const [autorizacion, setautorizacion] = useState<string | null>(null);
 
+  // Para los campos de los instrumentos
+  const [instrumentosData, setInstrumentosData] = useState<string | null>(null)
+  const [teoricasData, setTeoricasData] = useState<string | null>(null)
+  const [otrosData, setOtrosData] = useState<string | null>(null)
+  const [instrumentos, setInstrumentos] = useState([{ id: 1, value: "" }])
+  const [teoricas, setTeoricas] = useState([{ id: 1, value: "" }])
+  const [otros, setOtros] = useState([{ id: 1, value: "" }])
+
+  const handleInstrumentoChange = (id: number, newValue: string) => {
+    const actualizados = instrumentos.map(item =>
+      item.id === id ? { ...item, value: newValue } : item
+    )
+    setInstrumentos(actualizados)
+    const valores = actualizados.map(item => item.value).filter(v => v.trim() !== "")
+    setInstrumentosData(valores.join(";"))
+  }
+
+  const handleTeoricaChange = (id: number, newValue: string) => {
+    const actualizados = teoricas.map(item =>
+      item.id === id ? { ...item, value: newValue } : item
+    )
+    setTeoricas(actualizados)
+    const valores = actualizados.map(item => item.value).filter(v => v.trim() !== "")
+    setTeoricasData(valores.join(";"))
+  }
+  
+
+  const handleOtroChange = (id: number, newValue: string) => {
+    const actualizados = otros.map(item =>
+      item.id === id ? { ...item, value: newValue } : item
+    )
+    setOtros(actualizados)
+    const valores = actualizados.map(item => item.value).filter(v => v.trim() !== "")
+    setOtrosData(valores.join(";"))
+  }
+
+  // Para la foto
   const [photo, setPhoto] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
@@ -88,9 +122,9 @@ export default function index() {
           representanteDireccion: representanteDireccion,
           representanteEmail: representanteEmail,
 
-          instrumentos: instrumentos,
-          teoricas: teoricas,
-          otros: otros,
+          instrumentosData: instrumentosData,
+          teoricasData: teoricasData,
+          otrosData: otrosData,
           autorizacion:autorizacion,
           firmaCedula: "Prueba de firma y cédula",
         }),
@@ -531,6 +565,7 @@ export default function index() {
                             required
                             className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                             name={`instrumento-${item.id}`}
+                            onChange={(e) => handleInstrumentoChange(item.id, e.target.value)}
                           >
                             <option value=''>Seleccione una opción</option>
                             <option value='Violín'>Violín</option>
@@ -574,6 +609,7 @@ export default function index() {
                             required
                             className='w-full focus:border-blue-600'
                             name={`teorica-${item.id}`}
+                            onChange={(e) => handleTeoricaChange(item.id, e.target.value)}
                           />
                           <button
                             type="button"
@@ -609,6 +645,7 @@ export default function index() {
                             required
                             className='w-full focus:border-blue-600'
                             name={`otro-${item.id}`}
+                            onChange={(e) => handleOtroChange(item.id, e.target.value)}
                           />
                           <button
                             type="button"

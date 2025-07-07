@@ -146,15 +146,15 @@ const MyDocument = ({ data }) => (
         <Text style={styles.sectionTitle}>Cátedras a Inscribir</Text>
         <View style={styles.field}>
           <Text style={styles.label}>Instrumento(s):</Text>
-          <Text style={styles.value}>{data.instrumentos}</Text>
+          <Text style={styles.value}>{data.instrumentosData}</Text>
         </View>
         <View style={styles.field}>
           <Text style={styles.label}>Teóricas:</Text>
-          <Text style={styles.value}>{data.teoricas}</Text>
+          <Text style={styles.value}>{data.teoricasData}</Text>
         </View>
         <View style={styles.field}>
           <Text style={styles.label}>Otros:</Text>
-          <Text style={styles.value}>{data.otros}</Text>
+          <Text style={styles.value}>{data.otrosData}</Text>
         </View>
         <View style={styles.field}>
           <Text style={styles.label}>Posee instrumento propio:</Text>

@@ -47,68 +47,63 @@ export default function Login() {
   const [lista, setLista] = useState<ListaEsperaItem[]>([]);
   const [Estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
 
-  useEffect(() => {
-    const fetchLista = async () => {
-      try {
-        const res = await fetch('/api/lista_espera');
-        const data = await res.json();
+  const fetchLista = async () => {
+    try {
+      const res = await fetch('/api/lista_espera');
+      const data = await res.json();
 
-        if (!res.ok) {
-          console.log(`Ha ocurrido un error: ${data.message}`);
-          return;
-        }
-        setLista(data.data);
-      } catch (err) {
-        console.error(err);
+      if (!res.ok) {
+        console.log(`Ha ocurrido un error: ${data.message}`);
+        return;
       }
-    };
 
+      setLista(data.data);
+    } catch (err) {
+      console.error('Error al obtener lista_espera:', err);
+    }
+  };
+
+  useEffect(() => {
     fetchLista();
   }, []);
 
-  useEffect(() => {
-  if (lista.length === 0) {
-    console.log("La lista está vacía.");
-  } else if (lista.length === 1) {
-    const fetchEstudiante = async () => {
-      try {
-      const res = await fetch(`/api/estudiante?id=${lista[0].id_estudiante}`);
-      const data = await res.json();
-      if (!res.ok) {
-        console.log(`Solo hay un elemento con id: ${lista[0].id}, pero ocurrió un error al obtener el estudiante: ${data.message}`);
-      } else {
-        console.log(data.data);
-        setEstudiantes(data.data);
-      }
-      } catch (err) {
-      console.log(`Solo hay un elemento con id: ${lista[0].id}, pero ocurrió un error al obtener el estudiante.`);
-      }
-    };
-    fetchEstudiante();
-  } else {
-    // Construir la URL con todos los id_estudiante de la lista
-    let url = `/api/estudiante?id=${lista[0].id_estudiante}`;
-    for (let i = 1; i < lista.length; i++) {
-      url += `&id=${lista[i].id_estudiante}`;
+  const fetchEstudiantesPorLista = async () => {
+    if (lista.length === 0) {
+      console.log("La lista está vacía.");
+      return;
     }
-
-    // Hacer fetch a la URL construida
-    const fetchEstudiantes = async () => {
+    if (lista.length === 1) {
       try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (!res.ok) {
-        console.log(`Error al obtener los estudiantes: ${data.message}`);
-      } else {
-        console.log(data.data);
-        setEstudiantes(data.data);
-      }
+        const res = await fetch(`/api/estudiante?id=${lista[0].id_estudiante}`);
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(`Error al obtener estudiante único: ${data.message}`);
+        } else {
+          setEstudiantes(data.data);
+        }
       } catch (err) {
-      console.log("Ocurrió un error al obtener los estudiantes.");
+        console.error("Error al obtener estudiante único:", err);
       }
-    };
-    fetchEstudiantes();
-  }}, [lista]);
+    } else {
+      const params = lista.map((e) => `id=${e.id_estudiante}`).join('&');
+      try {
+        const res = await fetch(`/api/estudiante?${params}`);
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(`Error al obtener estudiantes: ${data.message}`);
+        } else {
+          setEstudiantes(data.data);
+        }
+      } catch (err) {
+        console.error("Error al obtener estudiantes:", err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchEstudiantesPorLista();
+  }, [lista]);
+
   
   const calcularEdad = (fecha: string) => {
     const nacimiento = new Date(fecha);
@@ -185,6 +180,68 @@ export default function Login() {
     }
   }
 
+  const crearUsuario = async (indice: number): Promise<void> => {
+    try {
+      const estudiante = Estudiantes[indice];
+
+      // crea un usuario
+      const res = await fetch("/api/usuario", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: estudiante.email,
+          contraseña: estudiante.ci || "123456789",
+          rol: "estudiante",
+          id_datos: estudiante.id || "",
+        }),
+      })
+      const resultado = await res.json();
+      if (!res.ok) {
+        console.log(`Ha ocurrido un error: ${resultado.message}`);
+        return;
+      }
+      const id_usuario = resultado.id;
+
+      // actualiza el campo id_usuario en la tabla estudiante
+      const resEstudiante = await fetch('/api/estudiante', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: estudiante.id,
+          id_usuario: id_usuario
+        }),
+      });
+      const resultadoEstudiante = await resEstudiante.json();
+      if (!resEstudiante.ok) {
+        console.log(`Ha ocurrido un error: ${resultadoEstudiante.message}`);
+        return;
+      }
+
+      // actualiza la lista de espera
+      const resLista = await fetch('/api/lista_espera', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_estudiante: estudiante.id,
+          estado: 0
+        }),
+      });
+      const resultadoLista = await resLista.json();
+      if (!resEstudiante.ok) {
+        console.log(`Ha ocurrido un error: ${resultadoLista.message}`);
+        return;
+      }
+      await fetchEstudiantesPorLista()
+      await fetchLista()
+      alert("Usuario creado exitosamente.")
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
     <>
       <Navbar />
@@ -229,7 +286,8 @@ export default function Login() {
                   >
                     Planilla
                   </Button>
-                  <Button className="bg-green-500 text-white rounded-xl hover:bg-green-600 text-xs px-2 py-1">
+                  <Button className="bg-green-500 text-white rounded-xl hover:bg-green-600 text-xs px-2 py-1"
+                          onClick={() => crearUsuario(indice)}>
                     Aceptar
                   </Button>
                   <Button className="bg-red-600 text-white rounded-xl hover:bg-red-800 text-xs px-2 py-1 ml-2">

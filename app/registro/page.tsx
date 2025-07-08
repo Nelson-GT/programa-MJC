@@ -239,6 +239,14 @@ export default function index() {
     }
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (form.checkValidity()) {
+      setShowModal(true);
+      handleGenerarPDF()
+    }
+  };
 
   return (
     <>
@@ -264,7 +272,7 @@ export default function index() {
               </h1>
             </div>
           </div>
-          <form onSubmit={(e) => e.preventDefault()} className='mt-8 space-y-5'>
+          <form onSubmit={handleSubmit} className='mt-8 space-y-5'>
             {/* --------------------Estudiante-------------------- */}
             <h3 className='text-gray-800 text-2xl font-bold sm:text-xl'>Datos del Estudiante</h3>
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
@@ -791,10 +799,6 @@ export default function index() {
             <Button
               type='submit'
               className='w-full text-white bg-blue-600 hover:bg-blue-500 ring-offset-2 ring-blue-600 focus:ring shadow rounded-lg'
-              onClick={() => {
-                setShowModal(true);
-                }
-              }
             >
               Inscribir
             </Button>

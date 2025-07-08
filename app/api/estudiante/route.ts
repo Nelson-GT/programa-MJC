@@ -87,3 +87,37 @@ export async function POST(req: Request) {
         );
     }
 }
+
+export async function PUT(req: NextRequest) {
+    try {
+        const { id, id_usuario } = await req.json();
+
+        if (!id || !id_usuario) {
+        return NextResponse.json(
+            { message: 'Faltan parámetros: se requieren id e id_usuario' },
+            { status: 400 }
+        );
+        }
+
+        const query = `UPDATE estudiante SET id_usuario = ? WHERE id = ?`;
+        const [result]: any = await db.execute(query, [id_usuario, id]);
+
+        if (result.affectedRows === 0) {
+        return NextResponse.json(
+            { message: 'No se encontró un estudiante con ese ID' },
+            { status: 404 }
+        );
+        }
+
+        return NextResponse.json({
+        message: 'id_usuario actualizado correctamente',
+        result,
+        });
+    } catch (error) {
+        console.error('Error al actualizar id_usuario:', error);
+        return NextResponse.json(
+        { message: 'Error al procesar la solicitud', error },
+        { status: 500 }
+        );
+    }
+}

@@ -27,3 +27,21 @@ export async function POST(req: Request) {
         );
     }
 }
+
+export async function GET() {
+    try {
+        const query = 'SELECT * FROM lista_espera';
+        const [rows]: any = await db.query(query);
+
+        return NextResponse.json({
+            message: 'Lista de espera obtenida correctamente',
+            data: rows,
+        });
+    } catch (error) {
+        console.error('Error al obtener lista_espera:', error);
+        return NextResponse.json(
+            { message: 'Error del servidor', error },
+            { status: 500 }
+        );
+    }
+}

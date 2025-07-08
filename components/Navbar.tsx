@@ -29,7 +29,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <header className="relative p-8">
+        <header className="relative p-8 pt-0">
             <div className="custom-screen md:hidden">
                 <NavHeader
                 menuBtnEl={menuBtnEl}

@@ -8,6 +8,8 @@ import Navbar from "@/components/Navbar";
 import Select from "@/components/ui/Select";
 
 export default function index() {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   const [nombreEstudiante, setnombreEstudiante] = useState<string | null>(null);
   const [fechaNacimiento, setfechaNacimiento] = useState<string | null>(null);
   const [edad, setedad] = useState<string | null>(null);
@@ -94,38 +96,38 @@ export default function index() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nombreEstudiante: nombreEstudiante,
-          fechaNacimiento: fechaNacimiento,
-          edad: edad,
-          sexo: sexo,
-          cedula: cedula,
-          telefono: telefono,
-          institucion: institucion,
-          ocupacion: ocupacion,
-          profesion: profesion,
-          lugarTrabajo: lugarTrabajo,
-          direccion: direccion,
-          email: email,
-          alergias: alergias,
-          antecedentes: antecedentes,
-          alergiasEspecificadas:alergiasEspecificadas,
-          contactoEmergencia:contactoEmergencia,
-          numeroEmergencia:numeroEmergencia,
+          nombreEstudiante: nombreEstudiante || "",
+          fechaNacimiento: fechaNacimiento || "",
+          edad: edad || "",
+          sexo: sexo || "",
+          cedula: cedula || "",
+          telefono: telefono || "",
+          institucion: institucion || "",
+          ocupacion: ocupacion || "",
+          profesion: profesion || "",
+          lugarTrabajo: lugarTrabajo || "",
+          direccion: direccion || "",
+          email: email || "",
+          alergias: alergias || "",
+          antecedentes: antecedentes || "",
+          alergiasEspecificadas:alergiasEspecificadas || "",
+          contactoEmergencia:contactoEmergencia || "",
+          numeroEmergencia:numeroEmergencia || "",
 
-          representanteNombre: representanteNombre,
-          representanteCI: representanteCI,
-          parentesco: parentesco,
-          representanteTelefono: representanteTelefono,
-          representanteOcupacion: representanteOcupacion,
-          representanteProfesion: representanteProfesion,
-          representanteLugarTrabajo:representanteLugarTrabajo,
-          representanteDireccion: representanteDireccion,
-          representanteEmail: representanteEmail,
+          representanteNombre: representanteNombre || "",
+          representanteCI: representanteCI || "",
+          parentesco: parentesco || "",
+          representanteTelefono: representanteTelefono || "",
+          representanteOcupacion: representanteOcupacion || "",
+          representanteProfesion: representanteProfesion || "",
+          representanteLugarTrabajo:representanteLugarTrabajo || "",
+          representanteDireccion: representanteDireccion || "",
+          representanteEmail: representanteEmail || "",
 
-          instrumentosData: instrumentosData,
-          teoricasData: teoricasData,
-          otrosData: otrosData,
-          autorizacion:autorizacion,
+          instrumentosData: instrumentosData || "",
+          teoricasData: teoricasData || "",
+          otrosData: otrosData || "",
+          autorizacion:autorizacion || "",
           firmaCedula: "Prueba de firma y cédula",
         }),
       })
@@ -148,6 +150,95 @@ export default function index() {
       console.error("Error al generar PDF:", error)
     }
   }
+
+  const handleRegistrar = async (): Promise<void> => {
+    try {
+      const res = await fetch("/api/estudiante", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nombre: nombreEstudiante || "",
+          fecha_nacimiento: fechaNacimiento || "",
+          sexo: sexo || "",
+          ci: cedula || "",
+          telefono: telefono || "",
+          institucion_educacional: institucion || "",
+          ocupacion: ocupacion || "",
+          profesion: profesion || "",
+          lugar_trabajo: lugarTrabajo || "",
+          direccion_residencial: direccion || "",
+          email: email || "",
+          alergias: alergias || "",
+          antecedentes: antecedentes || "",
+          antecedentes_especificados:alergiasEspecificadas || "",
+          emergencia_nombre:contactoEmergencia || "",
+          emergencia_telefono:numeroEmergencia || "",
+
+          reperesentante_nombre: representanteNombre || "",
+          reperesentante_ci: representanteCI || "",
+          reperesentante_parentesco: parentesco || "",
+          reperesentante_telefono: representanteTelefono || "",
+          reperesentante_ocupacion: representanteOcupacion || "",
+          reperesentante_profesion: representanteProfesion || "",
+          reperesentante_lugar_trabajo:representanteLugarTrabajo || "",
+          reperesentante_direccion: representanteDireccion || "",
+          reperesentante_email: representanteEmail || "",
+
+          instrumentos: instrumentosData || "",
+          teoricas: teoricasData || "",
+          otros: otrosData || "",
+          autorizacion:autorizacion || "",
+        }),
+      })
+
+      const resultado = await res.json();
+      if (!res.ok) {
+        console.log(`Ha ocurrido un Error: ${resultado.message}`)
+        alert("Ha ocurrido un Error. Por favor, intentelo más tarde");
+        return
+      }
+      const idEstudiante = resultado.id;
+      const resLista = await fetch('/api/lista_espera', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_estudiante: idEstudiante }),
+      });
+
+      const resultadoLista = await resLista.json();
+
+      if (resLista.ok) {
+        alert('Estudiante registrado correctamente');
+      } else {
+        alert("Ha ocurrido un error, por favor, vuelva a intentarlo más tarde");
+      }
+    } catch (err) {
+      console.error(err);
+      console.log('Error al conectar con el servidor');
+    }
+  }
+
+  const [Completo, setCompleto] = useState<boolean | null>(null)
+  const checkCompleto = () => {
+    if (
+      nombreEstudiante &&
+      fechaNacimiento &&
+      edad &&
+      sexo &&
+      direccion &&
+      email &&
+      antecedentes &&
+      contactoEmergencia &&
+      numeroEmergencia &&
+      autorizacion
+    ) {
+      setCompleto(true);
+    } else {
+      setCompleto(false);
+    }
+  };
+
 
   return (
     <>
@@ -174,7 +265,6 @@ export default function index() {
             </div>
           </div>
           <form onSubmit={(e) => e.preventDefault()} className='mt-8 space-y-5'>
-
             {/* --------------------Estudiante-------------------- */}
             <h3 className='text-gray-800 text-2xl font-bold sm:text-xl'>Datos del Estudiante</h3>
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
@@ -371,7 +461,6 @@ export default function index() {
                 <label className='font-medium'>Alérgico(a) a</label>
                 <Input
                   type='text'
-                  required
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setalergias(e.target.value)}
                 />
@@ -562,7 +651,6 @@ export default function index() {
                         <label className='font-medium'>{idx === 0 && "Instrumento(s)"}</label>
                         <div className="flex gap-2 mt-3">
                           <Select
-                            required
                             className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                             name={`instrumento-${item.id}`}
                             onChange={(e) => handleInstrumentoChange(item.id, e.target.value)}
@@ -606,7 +694,6 @@ export default function index() {
                         <div className="flex gap-2 mt-3">
                           <Input
                             type='text'
-                            required
                             className='w-full focus:border-blue-600'
                             name={`teorica-${item.id}`}
                             onChange={(e) => handleTeoricaChange(item.id, e.target.value)}
@@ -642,7 +729,6 @@ export default function index() {
                         <div className="flex gap-2 mt-3">
                           <Input
                             type='text'
-                            required
                             className='w-full focus:border-blue-600'
                             name={`otro-${item.id}`}
                             onChange={(e) => handleOtroChange(item.id, e.target.value)}
@@ -682,7 +768,7 @@ export default function index() {
                 <label className='inline-flex items-center'>
                   <input
                     type='radio'
-                    name='alergico'
+                    name='autorizacion'
                     value='si'
                     required
                     className='form-radio text-blue-600'
@@ -693,7 +779,7 @@ export default function index() {
                 <label className='inline-flex items-center'>
                   <input
                     type='radio'
-                    name='alergico'
+                    name='autorizacion'
                     value='no'
                     required
                     className='form-radio text-blue-600'
@@ -704,13 +790,42 @@ export default function index() {
               </div>
             <Button
               type='submit'
-              className='w-full text-white bg-blue-600 hover:bg-blue-500 ring-offset-2 ring-blue-600 focus:ring shadow rounded-lg'>
+              className='w-full text-white bg-blue-600 hover:bg-blue-500 ring-offset-2 ring-blue-600 focus:ring shadow rounded-lg'
+              onClick={() => {
+                setShowModal(true);
+                }
+              }
+            >
               Inscribir
             </Button>
-            <button onClick={handleGenerarPDF} className="bg-blue-600 text-white px-4 py-2 rounded">
-              Descargar planilla PDF
-            </button>
           </form>
+
+          {/* Modal de confirmación */}
+          {showModal && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
+                <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
+                    <p className="text-center mb-6">
+                      Se ha descargado la planilla de inscripción. Por favor, realice una revisión y en caso de que todos los datos sean correctos, proceda con la inscripción. <br></br>Si exite algún error, por favor, vuela a llenar los datos correspondientes</p>
+                  <div className="flex justify-between mt-4">
+                  <Button
+                    className="w-[48%] bg-gray-200 hover:bg-gray-300 rounded"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Volver
+                  </Button>
+                  <Button
+                    className="w-[48%] bg-green-600 text-white hover:bg-green-400 rounded"
+                    onClick={() => {
+                      setShowModal(false);
+                      handleRegistrar()
+                    }}
+                  >
+                    Continuar
+                  </Button>
+                  </div>
+                </div>
+              </div>
+          )}
         </div>
       </div>
     </>

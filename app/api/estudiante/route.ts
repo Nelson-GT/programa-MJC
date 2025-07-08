@@ -1,5 +1,38 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import db from '@/lib/db';
+
+export async function GET(req: NextRequest) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const idParams = searchParams.getAll('id');
+
+        if (!idParams || idParams.length === 0) {
+        return NextResponse.json({ message: 'No se proporcionaron IDs' }, { status: 400 });
+        }
+
+        const ids = idParams.map(Number).filter((id) => !isNaN(id));
+        if (ids.length === 0) {
+        return NextResponse.json({ message: 'IDs inválidos' }, { status: 400 });
+        }
+
+        const placeholders = ids.map(() => '?').join(', ');
+        const query = `SELECT * FROM estudiante WHERE id IN (${placeholders})`;
+
+        const [rows]: any = await db.query(query, ids);
+
+        return NextResponse.json({
+        message: 'Estudiantes obtenidos correctamente',
+        data: rows
+        });
+    } catch (error) {
+        console.error('Error al obtener estudiantes por ID:', error);
+        return NextResponse.json(
+        { message: 'Error al procesar la solicitud', error },
+        { status: 500 }
+        );
+    }
+}
+
 
 export async function POST(req: Request) {
     try {

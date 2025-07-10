@@ -229,7 +229,7 @@ export default function Login() {
         }),
       });
       const resultadoLista = await resLista.json();
-      if (!resEstudiante.ok) {
+      if (!resLista.ok) {
         console.log(`Ha ocurrido un error: ${resultadoLista.message}`);
         return;
       }
@@ -241,6 +241,36 @@ export default function Login() {
       console.error(err);
     }
   }
+
+  const eliminarUsuario = async (indice: number): Promise<void> => {
+    try {
+      const estudiante = Estudiantes[indice];
+      // actualiza la lista de espera
+      const resLista = await fetch('/api/lista_espera', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_estudiante: estudiante.id,
+          estado: 0
+        }),
+      });
+      const resultadoLista = await resLista.json();
+      if (!resLista.ok) {
+        console.log(`Ha ocurrido un error: ${resultadoLista.message}`);
+        return;
+      }
+      await fetchEstudiantesPorLista()
+      await fetchLista()
+      alert("Usuario eliminado exitosamente.")
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const [showModalConfirm, setShowModalConfir] = useState<boolean>(false);
+  const [showModalDelete, setshowModalDelete] = useState<boolean>(false);
+  const [aux, setAux] = useState<number>(0)
 
   return (
     <>
@@ -256,6 +286,7 @@ export default function Login() {
           <th className="px-4 py-2 bg-gray-100">ID</th>
           <th className="px-4 py-2 bg-gray-200">Nombre</th>
           <th className="px-4 py-2 bg-gray-100">Edad</th>
+          <th className="px-4 py-2 bg-gray-100">Cedula</th>
           <th className="px-4 py-2 bg-gray-200">Instrumento</th>
           <th className="px-4 py-2 bg-gray-100">Teórica</th>
           <th className="px-4 py-2 bg-gray-200">Otros</th>
@@ -277,21 +308,39 @@ export default function Login() {
                 <td className="px-4 py-2 border-b text-center font-bold">
                   {estudiante.fecha_nacimiento ? calcularEdad(estudiante.fecha_nacimiento) : '—'}
                 </td>
+                <td className="px-4 py-2 border-b text-center font-bold">{estudiante.ci || '—'}</td>
                 <td className="px-4 py-2 border-b text-center font-bold">{estudiante.instrumentos || '—'}</td>
                 <td className="px-4 py-2 border-b text-center font-bold">{estudiante.teorica || '—'}</td>
                 <td className="px-4 py-2 border-b text-center font-bold">{estudiante.otros || '—'}</td>
                 <td className="px-4 py-2 border-b text-center">
-                  <Button className="bg-gray-500 text-white rounded-xl hover:bg-gray-700 text-xs px-2 py-1 mr-2"
+                  <Button className="px-2 py-1 mr-2 rounded-full hover:bg-gray-100"
                           onClick={() => handleGenerarPDF(indice)}
                   >
-                    Planilla
+                    <img
+                      src="/edit.svg"
+                      alt="Icono de check"
+                      className="h-7 w-7"
+                    />
                   </Button>
-                  <Button className="bg-green-500 text-white rounded-xl hover:bg-green-600 text-xs px-2 py-1"
-                          onClick={() => crearUsuario(indice)}>
-                    Aceptar
+                  <Button className="px-2 py-1 rounded-full hover:bg-green-100"
+                          onClick={() => {
+                            setAux(indice);
+                            setShowModalConfir(true)}}>
+                    <img
+                      src="/check.svg"
+                      alt="Icono de check"
+                      className="h-7 w-7"
+                    />
                   </Button>
-                  <Button className="bg-red-600 text-white rounded-xl hover:bg-red-800 text-xs px-2 py-1 ml-2">
-                    Eliminar
+                  <Button className="px-2 py-1 ml-2 rounded-full hover:bg-red-100"
+                          onClick={() => {
+                            setAux(indice);
+                            setshowModalDelete(true)}}>
+                    <img
+                      src="/delete.svg"
+                      alt="Icono de check"
+                      className="h-7 w-7"
+                    />
                   </Button>
                 </td>
               </tr>
@@ -300,6 +349,60 @@ export default function Login() {
         </tbody>
         </table>
       </div>
+      {/* Modal de confirmación */}
+      {showModalConfirm && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
+            <p className="text-center mb-6">
+              Estás seguro de que desea <span className="text-green-600">Aceptar</span> a<br></br><span className="font-bold text-lg">{Estudiantes[aux].nombre}.</span>
+            </p>
+            <div className="flex justify-between mt-4">
+              <Button
+                className="w-[48%] bg-gray-200 hover:bg-gray-300 rounded"
+                onClick={() => setShowModalConfir(false)}
+              >
+                Volver
+              </Button>
+              <Button
+                className="w-[48%] bg-green-600 text-white hover:bg-green-400 rounded"
+                onClick={() => {
+                setShowModalConfir(false);
+                eliminarUsuario(aux)
+                }}
+              >
+                Aceptar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal para Denegar */}
+      {showModalDelete && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
+            <p className="text-center mb-6">
+              Estás seguro de que desea <span className="text-red-600">Rechazar</span> a<br></br><span className="font-bold text-lg">{Estudiantes[aux].nombre}</span>.
+            </p>
+            <div className="flex justify-between mt-4">
+              <Button
+                className="w-[48%] bg-gray-200 hover:bg-gray-300 rounded"
+                onClick={() => setshowModalDelete(false)}
+              >
+                Volver
+              </Button>
+              <Button
+                className="w-[48%] bg-red-600 text-white hover:bg-red-700 rounded"
+                onClick={() => {
+                setshowModalDelete(false);
+                eliminarUsuario(aux)
+                }}
+              >
+                Rechazar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

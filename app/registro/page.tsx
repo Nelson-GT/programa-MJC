@@ -15,7 +15,8 @@ export default function index() {
   const [edad, setedad] = useState<string | null>(null);
   const [sexo, setsexo] = useState<string | null>(null);
   const [cedula, setcedula] = useState<string | null>(null);
-  const [telefono, settelefono] = useState<string | null>(null);
+  const [telefonoEstudiante, settelefonoEstudiante] = useState<string>("0");
+  const [CodigoTelefonoEstudiante, setCodigoTelefonoEstudiante] = useState<string>("0");
   const [institucion, setinstitucion] = useState<string | null>(null);
   const [ocupacion, setocupacion] = useState<string | null>(null);
   const [profesion, setprofesion] = useState<string | null>(null);
@@ -101,7 +102,7 @@ export default function index() {
           edad: edad || "",
           sexo: sexo || "",
           cedula: cedula || "",
-          telefono: telefono || "",
+          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
           institucion: institucion || "",
           ocupacion: ocupacion || "",
           profesion: profesion || "",
@@ -163,7 +164,7 @@ export default function index() {
           fecha_nacimiento: fechaNacimiento || "",
           sexo: sexo || "",
           ci: cedula || "",
-          telefono: telefono || "",
+          telefono: telefonoEstudiante || "",
           institucion_educacional: institucion || "",
           ocupacion: ocupacion || "",
           profesion: profesion || "",
@@ -304,7 +305,7 @@ export default function index() {
             {/* Nombres y Apellidos */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Nombres y Apellidos</label>
+                <label className='font-medium'>Nombres y Apellidos *</label>
                 <Input
                   type='text'
                   required
@@ -317,7 +318,7 @@ export default function index() {
             {/* Fecha de Nacimiento y Edad */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Fecha de Nacimiento</label>
+                <label className='font-medium'>Fecha de Nacimiento *</label>
                 <Input
                   id='fecha-nacimiento'
                   type='date'
@@ -348,7 +349,7 @@ export default function index() {
                 />
               </div>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Edad</label>
+                <label className='font-medium'>Edad *</label>
                 <Input
                   id='edad-estudiante'
                   type='text'
@@ -364,7 +365,7 @@ export default function index() {
             {/* Sexo y C.I. */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Sexo</label>
+                <label className='font-medium'>Sexo *</label>
                 <Select
                   required
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setsexo(e.target.value)}
@@ -387,13 +388,31 @@ export default function index() {
 
             {/* Teléfono Celular */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
-              <div className='flex-1 w-full'>
-                <label className='font-medium'>Teléfono Celular</label>
-                <Input
-                  type='tel'
-                  className='w-full mt-3 focus:border-blue-600'
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => settelefono(e.target.value)}
-                />
+              <div className='w-full'>
+                <label className='font-medium'>Teléfono Celular *</label>
+                <div className='flex felx-row gap-4 mt-3'>
+                  <Select
+                    required
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCodigoTelefonoEstudiante(e.target.value)}
+                    className='w-1/3 border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
+                  >
+                    <option value="">Seleccione</option>
+                    <option value='0412'>0412</option>
+                    <option value='0422'>0422</option>
+                    <option value='0414'>0414</option>
+                    <option value='0424'>0424</option>
+                    <option value='0416'>0416</option>
+                    <option value='0426'>0426</option>
+                  </Select>
+                  <Input
+                    type='text'
+                    maxLength={7}
+                    minLength={7}
+                    required
+                    className='w-[60%] focus:border-blue-600'
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => settelefonoEstudiante(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
 
@@ -440,7 +459,7 @@ export default function index() {
             {/* Dirección Residencial */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Dirección Residencial</label>
+                <label className='font-medium'>Dirección Residencial *</label>
                 <Input
                   type='text'
                   required
@@ -453,7 +472,7 @@ export default function index() {
             {/* E-mail */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>E-mail</label>
+                <label className='font-medium'>E-mail *</label>
                 <Input
                   type='email'
                   required
@@ -466,8 +485,10 @@ export default function index() {
             {/* Alérgico(a) a */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Alérgico(a) a</label>
+                <label className='font-medium'>Alérgico(a) a *</label>
                 <Input
+                  required
+                  value={"Nada"}
                   type='text'
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setalergias(e.target.value)}
@@ -477,7 +498,7 @@ export default function index() {
 
             {/* Antecedentes (médico, psicológico) */}
             <div>
-              <label className='font-medium'>Antecedentes (médico, psicológico)</label>
+              <label className='font-medium'>Antecedentes (médico, psicológico) *</label>
               <div className='flex items-center mt-3 space-x-6'>
                 <label className='inline-flex items-center'>
                   <input
@@ -513,7 +534,7 @@ export default function index() {
             </div>
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>En caso de emergencia avisar a</label>
+                <label className='font-medium'>En caso de emergencia avisar a *</label>
                 <Input
                   type='text'
                   required
@@ -522,7 +543,7 @@ export default function index() {
                 />
               </div>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Teléfono</label>
+                <label className='font-medium'>Teléfono *</label>
                 <Input
                   type='tel'
                   required
@@ -771,7 +792,7 @@ export default function index() {
             <h3 className='text-gray-800 text-3xl font-bold sm:text-xl'>Autorización</h3>
             <p className='text-gray-800 text-2x l font-bold sm:text-sm'>
               Autorizo a la Fundación Orquesta Sinfónica de Carabobo a hacer uso del material fotográfico y audiovisual de las actividades académicas y artísticas que se lleven a cabo durante el desarrollo del Programa de Formación Musical. Las imágenes podrán ser usadas para la difusión en medios de comunicación y redes sociales.
-              </p>
+               *</p>
             <div className='flex items-center mt-3 space-x-6'>
                 <label className='inline-flex items-center'>
                   <input

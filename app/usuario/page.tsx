@@ -1,24 +1,14 @@
 "use client"
-import { useState } from "react"
 import Head from "next/head"
-import Brand from "@/components/Brand"
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
 
-type Evaluacion = {
-  evaluacion: string
-  peso: number
-  nota: number
-}
-
-type NotasPorMateria = Record<string, Evaluacion[]>
-
 const estudiante = {
-  foto: "/persona.jpg",
-  nombre: "Nelson Guerrero",
-  cedula: "32067861",
-  telefono: "04124117850",
-  email: "nelson.guerrero@email.com",
+  foto: "/musico.jpg",
+  nombre: "Pedro Perez",
+  cedula: "12345678",
+  telefono: "04129999999",
+  email: "pperez@email.com",
   instrumento: "Violín",
   teoricas: ["Historia", "Solfeo"],
   otros: ["Coro", "Armonía"],
@@ -26,34 +16,35 @@ const estudiante = {
   estatusAcademico: "Regular",
 }
 
-const notas = {
-  instrumento: [
-    { evaluacion: "Parcial 1", peso: 30, nota: 18 },
-    { evaluacion: "Parcial 2", peso: 30, nota: 17 },
-    { evaluacion: "Recital", peso: 40, nota: 19 },
-  ],
-  teoricas: {
-    Historia: [
-      { evaluacion: "Examen 1", peso: 50, nota: 16 },
-      { evaluacion: "Examen 2", peso: 50, nota: 18 },
-    ],
-    Solfeo: [
-      { evaluacion: "Prueba 1", peso: 60, nota: 17 },
-      { evaluacion: "Prueba 2", peso: 40, nota: 15 },
-    ],
-  } as NotasPorMateria,
-  otros: {
-    Coro: [{ evaluacion: "Participación", peso: 100, nota: 20 }],
-    Armonía: [{ evaluacion: "Trabajo Final", peso: 100, nota: 18 }],
-  } as NotasPorMateria,
+type Nota = {
+  periodo: string;
+  nivel_inicial: string;
+  nota_final: number;
+  estatus: string;
+  materia: string;
+};
+
+const notas_prueba: Nota[] = [
+  { periodo: "2024-1", nivel_inicial: "A1", nota_final: 18.5, estatus: "Promovido", materia: "Violín" },
+  { periodo: "2024-2", nivel_inicial: "A2", nota_final: 17.2, estatus: "Continua", materia: "Violín" },
+  { periodo: "2024-3", nivel_inicial: "A2", nota_final: 15.8, estatus: "Promovido", materia: "Violín" },
+  { periodo: "2025-1", nivel_inicial: "B1", nota_final: 16.9, estatus: "Promovido", materia: "Violín" },
+  { periodo: "2024-2", nivel_inicial: "Primer año", nota_final: 12.3, estatus: "Promovido", materia: "Solfeo" },
+  { periodo: "2024-3", nivel_inicial: "Segundo año", nota_final: 13.8, estatus: "Promovido", materia: "Solfeo" },
+  { periodo: "2025-1", nivel_inicial: "Tercer año", nota_final: 15.0, estatus: "Promovido", materia: "Solfeo" },
+  { periodo: "2024-3", nivel_inicial: "A1", nota_final: 10.5, estatus: "Continua", materia: "Coro" },
+  { periodo: "2025-1", nivel_inicial: "A1", nota_final: 11.7, estatus: "Continua", materia: "Coro" },
+];
+
+function agruparPorMateria(notas: Nota[]): Record<string, Nota[]> {
+  return notas.reduce((acc, nota) => {
+    acc[nota.materia] = acc[nota.materia] || [];
+    acc[nota.materia].push(nota);
+    return acc;
+  }, {} as Record<string, Nota[]>);
 }
 
-function calcularTotal(materiaNotas: Evaluacion[]) {
-  return materiaNotas.reduce(
-    (acc, n) => acc + (n.peso / 100) * n.nota,
-    0
-  )
-}
+const notasPorMateria = agruparPorMateria(notas_prueba);
 
 export default function Estudiante() {
   return (
@@ -74,20 +65,17 @@ export default function Estudiante() {
               className="w-36 h-36 rounded-full object-cover border"
             />
             <div className="flex-1 flex flex-col md:flex-row gap-8 w-full">
-              {/* Columna 1 */}
               <div className="flex-1 mb-4 md:mb-0">
                 <div className="text-gray-600 mb-1"><b>Nombre:</b> {estudiante.nombre}</div>
                 <div className="text-gray-600 mb-1"><b>Cédula:</b> {estudiante.cedula}</div>
                 <div className="text-gray-600 mb-1"><b>Teléfono:</b> {estudiante.telefono}</div>
                 <div className="text-gray-600"><b>Email:</b> {estudiante.email}</div>
               </div>
-              {/* Columna 2 */}
               <div className="flex-1 mb-4 md:mb-0">
                 <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante.instrumento}</div>
                 <div className="text-gray-600 mb-1"><b>Teóricas:</b> {estudiante.teoricas.join(", ")}</div>
                 <div className="text-gray-600"><b>Otros:</b> {estudiante.otros.join(", ")}</div>
               </div>
-              {/* Columna 3 */}
               <div className="flex-1">
                 <div className="text-gray-600 mb-1"><b>Estatus Administrativo:</b> {estudiante.estatusAdministrativo}</div>
                 <div className="text-gray-600"><b>Estatus Académico:</b> {estudiante.estatusAcademico}</div>
@@ -95,91 +83,28 @@ export default function Estudiante() {
             </div>
           </div>
         </div>
-        <div className="bg-white shadow rounded-lg p-6 w-full max-w-3xl mb-8">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Instrumento Principal: {estudiante.instrumento}</h3>
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg mb-2">
-            <thead>
-              <tr className="bg-gray-100 text-gray-700">
-                <th className="px-4 py-2 border-b">Evaluación</th>
-                <th className="px-4 py-2 border-b">Peso (%)</th>
-                <th className="px-4 py-2 border-b">Nota</th>
-                <th className="px-4 py-2 border-b">Total Acumulado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {notas.instrumento.map((n, i) => (
-                <tr key={i}>
-                  <td className="px-4 py-2 border-b text-center">{n.evaluacion}</td>
-                  <td className="px-4 py-2 border-b text-center">{n.peso}</td>
-                  <td className="px-4 py-2 border-b text-center">{n.nota}</td>
-                  <td className="px-4 py-2 border-b text-center">{((n.peso / 100) * n.nota).toFixed(2)}</td>
-                </tr>
-              ))}
-              <tr>
-                <td colSpan={3} className="px-4 py-2 font-bold text-right border-b">Total Acumulado</td>
-                <td className="px-4 py-2 font-bold border-b">{calcularTotal(notas.instrumento).toFixed(2)}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
-        {/* Notas de Teóricas */}
-        {estudiante.teoricas.map((materia) => (
+        {Object.entries(notasPorMateria).map(([materia, registros]) => ( /* Divide por materia*/
           <div key={materia} className="bg-white shadow rounded-lg p-6 w-full max-w-3xl mb-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Teórica: {materia}</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">Historial Académico: {materia}</h3>
             <table className="min-w-full bg-white border border-gray-200 rounded-lg mb-2">
               <thead>
                 <tr className="bg-gray-100 text-gray-700">
-                  <th className="px-4 py-2 border-b">Evaluación</th>
-                  <th className="px-4 py-2 border-b">Peso (%)</th>
-                  <th className="px-4 py-2 border-b">Nota</th>
-                  <th className="px-4 py-2 border-b">Total Acumulado</th>
+                  <th className="px-4 py-2 border-b">Periodo</th>
+                  <th className="px-4 py-2 border-b">Nivel</th>
+                  <th className="px-4 py-2 border-b">Nota Final</th>
+                  <th className="px-4 py-2 border-b">Estatus</th>
                 </tr>
               </thead>
               <tbody>
-                {notas.teoricas[materia].map((n, i) => (
+                {registros.map((nota, i) => (
                   <tr key={i}>
-                    <td className="px-4 py-2 border-b text-center">{n.evaluacion}</td>
-                    <td className="px-4 py-2 border-b text-center">{n.peso}</td>
-                    <td className="px-4 py-2 border-b text-center">{n.nota}</td>
-                    <td className="px-4 py-2 border-b text-center">{((n.peso / 100) * n.nota).toFixed(2)}</td>
+                    <td className="px-4 py-2 border-b text-center">{nota.periodo}</td>
+                    <td className="px-4 py-2 border-b text-center">{nota.nivel_inicial}</td>
+                    <td className="px-4 py-2 border-b text-center">{nota.nota_final}</td>
+                    <td className="px-4 py-2 border-b text-center">{nota.estatus}</td>
                   </tr>
                 ))}
-                <tr>
-                  <td colSpan={3} className="px-4 py-2 font-bold text-right border-b">Total Acumulado</td>
-                  <td className="px-4 py-2 font-bold border-b">{calcularTotal(notas.teoricas[materia]).toFixed(2)}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        ))}
-
-        {/* Notas de Otros */}
-        {estudiante.otros.map((materia) => (
-          <div key={materia} className="bg-white shadow rounded-lg p-6 w-full max-w-3xl mb-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Otro: {materia}</h3>
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg mb-2">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700">
-                  <th className="px-4 py-2 border-b">Evaluación</th>
-                  <th className="px-4 py-2 border-b">Peso (%)</th>
-                  <th className="px-4 py-2 border-b">Nota</th>
-                  <th className="px-4 py-2 border-b">Total Acumulado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {notas.otros[materia].map((n, i) => (
-                  <tr key={i}>
-                    <td className="px-4 py-2 border-b text-center">{n.evaluacion}</td>
-                    <td className="px-4 py-2 border-b text-center">{n.peso}</td>
-                    <td className="px-4 py-2 border-b text-center">{n.nota}</td>
-                    <td className="px-4 py-2 border-b text-center">{((n.peso / 100) * n.nota).toFixed(2)}</td>
-                  </tr>
-                ))}
-                <tr>
-                  <td colSpan={3} className="px-4 py-2 font-bold text-right border-b">Total Acumulado</td>
-                  <td className="px-4 py-2 font-bold border-b">{calcularTotal(notas.otros[materia]).toFixed(2)}</td>
-                </tr>
               </tbody>
             </table>
           </div>

@@ -13,7 +13,7 @@ export default function index() {
   const [nombreEstudiante, setnombreEstudiante] = useState<string | null>(null);
   const [fechaNacimiento, setfechaNacimiento] = useState<string | null>(null);
   const [edad, setedad] = useState<string | null>(null);
-  const [sexo, setsexo] = useState<string | null>(null);
+  const [genero, setgenero] = useState<string | null>(null);
   const [cedula, setcedula] = useState<string | null>(null);
   const [telefonoEstudiante, settelefonoEstudiante] = useState<string>("0");
   const [CodigoTelefonoEstudiante, setCodigoTelefonoEstudiante] = useState<string>("0");
@@ -100,7 +100,7 @@ export default function index() {
           nombreEstudiante: nombreEstudiante || "",
           fechaNacimiento: fechaNacimiento || "",
           edad: edad || "",
-          sexo: sexo || "",
+          genero: genero || "",
           cedula: cedula || "",
           telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
           institucion: institucion || "",
@@ -162,7 +162,7 @@ export default function index() {
         body: JSON.stringify({
           nombre: nombreEstudiante || "",
           fecha_nacimiento: fechaNacimiento || "",
-          sexo: sexo || "",
+          genero: genero || "",
           ci: cedula || "",
           telefono: telefonoEstudiante || "",
           institucion_educacional: institucion || "",
@@ -226,7 +226,7 @@ export default function index() {
       nombreEstudiante &&
       fechaNacimiento &&
       edad &&
-      sexo &&
+      genero &&
       direccion &&
       email &&
       antecedentes &&
@@ -326,7 +326,8 @@ export default function index() {
                   max={new Date().toISOString().split('T')[0]}
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={e => {
-                    setfechaNacimiento(e.target.value);
+                    const fechaAux = `${e.target.value.split("-")[2]}-${e.target.value.split("-")[1]}-${e.target.value.split("-")[0]}`
+                    setfechaNacimiento(fechaAux);
                     const fecha = e.target.value;
                     const edadInput = document.getElementById('edad-estudiante') as HTMLInputElement | null;
                     if (fecha) {
@@ -362,13 +363,13 @@ export default function index() {
               </div>
             </div>
 
-            {/* Sexo y C.I. */}
+            {/* genero y C.I. */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Sexo *</label>
+                <label className='font-medium'>Género *</label>
                 <Select
                   required
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setsexo(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setgenero(e.target.value)}
                   className='w-full mt-3 border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                 >
                   <option value=''>Seleccione una opción</option>
@@ -377,7 +378,7 @@ export default function index() {
                 </Select>
               </div>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>C.I.:</label>
+                <label className='font-medium'>C.I.</label>
                 <Input
                   type='text'
                   className='w-full mt-3 focus:border-blue-600'
@@ -409,6 +410,7 @@ export default function index() {
                     maxLength={7}
                     minLength={7}
                     required
+                    placeholder="1234567"
                     className='w-[60%] focus:border-blue-600'
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => settelefonoEstudiante(e.target.value)}
                   />

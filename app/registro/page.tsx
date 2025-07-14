@@ -27,10 +27,12 @@ export default function index() {
   const [antecedentes, setantecedentes] = useState<string | null>(null);
   const [alergiasEspecificadas, setalergiasEspecificadas] = useState<string | null>(null);
   const [contactoEmergencia, setcontactoEmergencia] = useState<string | null>(null);
-  const [numeroEmergencia, setnumeroEmergencia] = useState<string | null>(null);
+  const [codigonumeroEmergencia, setCodigoNumeroEmergencia] = useState<string>("0");
+  const [numeroEmergencia, setnumeroEmergencia] = useState<string>("0");
   const [representanteNombre, setrepresentanteNombre] = useState<string | null>(null);
   const [representanteCI, setrepresentanteCI] = useState<string | null>(null);
   const [parentesco, setparentesco] = useState<string | null>(null);
+  const [representanteCodigoTelefono, setrepresentanteCodigoTelefono] = useState<string>("0");
   const [representanteTelefono, setrepresentanteTelefono] = useState<string | null>(null);
   const [representanteOcupacion, setrepresentanteOcupacion] = useState<string | null>(null);
   const [representanteProfesion, setrepresentanteProfesion] = useState<string | null>(null);
@@ -113,12 +115,12 @@ export default function index() {
           antecedentes: antecedentes || "",
           alergiasEspecificadas:alergiasEspecificadas || "",
           contactoEmergencia:contactoEmergencia || "",
-          numeroEmergencia:numeroEmergencia || "",
+          numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
 
           representanteNombre: representanteNombre || "",
           representanteCI: representanteCI || "",
           parentesco: parentesco || "",
-          representanteTelefono: representanteTelefono || "",
+          representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || "",
           representanteOcupacion: representanteOcupacion || "",
           representanteProfesion: representanteProfesion || "",
           representanteLugarTrabajo:representanteLugarTrabajo || "",
@@ -164,7 +166,7 @@ export default function index() {
           fecha_nacimiento: fechaNacimiento || "",
           genero: genero || "",
           ci: cedula || "",
-          telefono: telefonoEstudiante || "",
+          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
           institucion_educacional: institucion || "",
           ocupacion: ocupacion || "",
           profesion: profesion || "",
@@ -175,12 +177,12 @@ export default function index() {
           antecedentes: antecedentes || "",
           antecedentes_especificados:alergiasEspecificadas || "",
           emergencia_nombre:contactoEmergencia || "",
-          emergencia_telefono:numeroEmergencia || "",
+          numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
 
           reperesentante_nombre: representanteNombre || "",
           reperesentante_ci: representanteCI || "",
           reperesentante_parentesco: parentesco || "",
-          reperesentante_telefono: representanteTelefono || "",
+          representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || "",
           reperesentante_ocupacion: representanteOcupacion || "",
           reperesentante_profesion: representanteProfesion || "",
           reperesentante_lugar_trabajo:representanteLugarTrabajo || "",
@@ -391,29 +393,33 @@ export default function index() {
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='w-full'>
                 <label className='font-medium'>Teléfono Celular *</label>
-                <div className='flex felx-row gap-4 mt-3'>
-                  <Select
-                    required
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCodigoTelefonoEstudiante(e.target.value)}
-                    className='w-1/3 border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
-                  >
-                    <option value="">Seleccione</option>
-                    <option value='0412'>0412</option>
-                    <option value='0422'>0422</option>
-                    <option value='0414'>0414</option>
-                    <option value='0424'>0424</option>
-                    <option value='0416'>0416</option>
-                    <option value='0426'>0426</option>
-                  </Select>
-                  <Input
-                    type='text'
-                    maxLength={7}
-                    minLength={7}
-                    required
-                    placeholder="1234567"
-                    className='w-[60%] focus:border-blue-600'
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => settelefonoEstudiante(e.target.value)}
-                  />
+                <div className="flex flex-row mt-3 justify-between items-center">
+                  <div className="w-[50%] items-start mr-4">
+                    <Select
+                      required
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCodigoTelefonoEstudiante(e.target.value)}
+                      className='border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
+                    >
+                      <option value="">Seleccione</option>
+                      <option value='0412'>0412</option>
+                      <option value='0422'>0422</option>
+                      <option value='0414'>0414</option>
+                      <option value='0424'>0424</option>
+                      <option value='0416'>0416</option>
+                      <option value='0426'>0426</option>
+                    </Select>
+                  </div>
+                  <div className="w-[50%] items-end">
+                    <Input
+                      type='text'
+                      maxLength={7}
+                      minLength={7}
+                      required
+                      placeholder="1234567"
+                      className='w-[60%] focus:border-blue-600'
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => settelefonoEstudiante(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -534,8 +540,9 @@ export default function index() {
                 className='w-full mt-3 focus:border-blue-600'
               />
             </div>
-            <div className='flex flex-col sm:flex-row gap-4 w-full'>
-              <div className='flex-1 w-full'>
+
+            <div className='flex flex-col sm:flex-row gap-3 w-full items-start'>
+              <div className='w-[50%]'>
                 <label className='font-medium'>En caso de emergencia avisar a *</label>
                 <Input
                   type='text'
@@ -544,14 +551,38 @@ export default function index() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setcontactoEmergencia(e.target.value)}
                 />
               </div>
-              <div className='flex-1 w-full'>
+
+              <div className='w-[60%]'>
                 <label className='font-medium'>Teléfono *</label>
-                <Input
-                  type='tel'
-                  required
-                  className='w-full mt-3 focus:border-blue-600'
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setnumeroEmergencia(e.target.value)}
-                />
+                <div className="flex flex-row mt-3 justify-between items-center gap-2">
+                  <div className="w-[50%]">
+                    <Select
+                      required
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCodigoNumeroEmergencia(e.target.value)}
+                      className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
+                    >
+                      <option value="">seleccione</option>
+                      <option value='0412'>0412</option>
+                      <option value='0422'>0422</option>
+                      <option value='0414'>0414</option>
+                      <option value='0424'>0424</option>
+                      <option value='0416'>0416</option>
+                      <option value='0426'>0426</option>
+                    </Select>
+                  </div>
+
+                  <div className="w-[50%]">
+                    <Input
+                      type='text'
+                      maxLength={7}
+                      minLength={7}
+                      required
+                      placeholder="1234567"
+                      className='w-full focus:border-blue-600'
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setnumeroEmergencia(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
             <br></br>
@@ -585,24 +616,51 @@ export default function index() {
                 />
               </div>
             </div>
-            <div className='flex flex-col sm:flex-row gap-4 w-full'>
-              <div className='flex-1 w-full'>
+            <div className='flex flex-col sm:flex-row gap-3 w-full items-start'>
+              <div className='w-[50%]'>
                 <label className='font-medium'>Teléfono Celular</label>
-                <Input
-                  type='tel'
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteTelefono(e.target.value)}
-                  className='w-full mt-3 focus:border-blue-600'
-                />
+                <div className="flex flex-row mt-3 justify-between items-center gap-2">
+                  <div className="w-[50%]">
+                    <Select
+                      required
+                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setrepresentanteCodigoTelefono(e.target.value)}
+                      className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
+                    >
+                      <option value="">seleccione</option>
+                      <option value='0412'>0412</option>
+                      <option value='0422'>0422</option>
+                      <option value='0414'>0414</option>
+                      <option value='0424'>0424</option>
+                      <option value='0416'>0416</option>
+                      <option value='0426'>0426</option>
+                    </Select>
+                  </div>
+
+                  <div className="w-[50%]">
+                    <Input
+                      type='text'
+                      maxLength={7}
+                      minLength={7}
+                      required
+                      placeholder="1234567"
+                      className='w-full focus:border-blue-600'
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteTelefono(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className='flex-1 w-full'>
-                <label className='font-medium'>Ocupación</label>
+              <div className='w-[50%]'>
+                <label className='font-medium'>Ocupacion</label>
                 <Input
                   type='text'
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteOcupacion(e.target.value)}
+                  required
                   className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteOcupacion(e.target.value)}
                 />
               </div>
+
             </div>
+
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
                 <label className='font-medium'>Profesión</label>

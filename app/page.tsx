@@ -19,7 +19,6 @@ export default function Home() {
       <Alianza /> {/* Alianzas */}
       <Reseña /> {/* reseña histórica */} 
       <Programas /> {/* Forma parte de nuestros programas */}
-      <Audiciones/>
       <Footer />
     </>
   );

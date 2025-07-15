@@ -11,7 +11,14 @@ const CTA = () => {
                         Forma parte de nuestros programas
                     </h2>
                     <p className="text-gray-600">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure impedit provident, cupiditate nobis quos quis excepturi deleniti, iusto asperiores atque mollitia corporis perspiciatis? Animi, obcaecati nemo consequatur deserunt incidunt ex.
+                        La Estudiantina del Programa de Formación Musical Maestro José Calabrese te invita a ser parte de nuestra armonía!
+
+¿Te apasiona la música y quieres llevar tu talento al siguiente nivel? ¡Esta es tu oportunidad! Ven y aprende mandolina, cuatro o guitarra.
+
+Aquí podrás:
+Desarrollar tus habilidades musicales con la guía de nuestros maestros.
+Compartir el escenario y vivir experiencias inolvidables.
+Formar parte de una familia que celebra la música y la amistad.
                     </p>
                     <div className="pt-1">
                         <NavLink

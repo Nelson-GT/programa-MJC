@@ -29,7 +29,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <header className="relative p-8 pt-0">
+        <header className="bg-[#721422]  relative p-0">
             <div className="custom-screen md:hidden">
                 <NavHeader
                 menuBtnEl={menuBtnEl}
@@ -38,7 +38,7 @@ const Navbar = () => {
                 />
             </div>
             <nav
-                className={`bg-white pb-5 md:text-sm md:static md:block ${
+                className={`bg-[#721422] p-0 md:text-sm md:static md:block ${
                 state
                     ? 'absolute z-20 top-2 inset-x-4 shadow-lg rounded-xl border md:shadow-none md:border-none'
                     : 'hidden'
@@ -47,7 +47,7 @@ const Navbar = () => {
                 <div className="custom-screen gap-x-20 items-center ml-10 md:flex">
                 <NavHeader state={state} onClick={() => setState(!state)} />
                 <div
-                    className={`flex-1 items-center mt-8 mr-10 text-gray-600 md:font-medium md:mt-0 md:flex ${
+                    className={`flex-1 items-center mt-8 mr-10 text-white text-lg md:font-medium md:mt-0 md:flex ${
                     state ? 'block' : 'hidden'
                     }`}
                 >
@@ -63,7 +63,7 @@ const Navbar = () => {
                     <div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
                     <NavLink
                         href="/login"
-                        className="flex items-center justify-center gap-x-1 text-sm text-white font-medium bg-gray-800 hover:bg-gray-600 active:bg-gray-900 md:inline-flex"
+                        className="flex items-center justify-center gap-x-1 text-sm text-white font-medium bg-[#AD8A1F] hover:bg-[#9a7d08] active:bg-[#5e5026] md:inline-flex"
                     >
                         Iniciar sesión
                         <svg

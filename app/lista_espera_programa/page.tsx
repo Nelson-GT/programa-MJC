@@ -32,6 +32,7 @@ export default function ListaEspera() {
   const [showModalConfirm, setShowModalConfirm] = useState<boolean>(false);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [selectedEstudiante, setSelectedEstudiante] = useState<number>(0);
+  const [estudianteCI, setEstudianteCI] = useState<string>("");
 
   const fetchListaEspera = async () => {
     try {
@@ -120,10 +121,23 @@ export default function ListaEspera() {
     }
   };
 
-  const handleAceptarEstudiante = async (idEstudiante: number) => {
+  const handleAceptarEstudiante = async (idEstudiante: number, cedula:string) => {
     try {
       // Aquí iría la lógica para aceptar al estudiante
       // Por ejemplo, crear usuario y actualizar estado
+      const res2 = await fetch("/api/usuario", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_estudiante: idEstudiante,
+          contraseña: cedula || "123456789",
+        }),
+      });
+
+      if (!res2.ok) throw new Error("Error creando el usuario");
+
       const res = await fetch('http://localhost:3200/api/lista_espera', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -243,6 +257,7 @@ export default function ListaEspera() {
                         className="px-2 py-1 rounded-full hover:bg-green-100"
                         onClick={() => {
                           setSelectedEstudiante(estudiante.id);
+                          setEstudianteCI(estudiante.cedula);
                           setShowModalConfirm(true);
                         }}
                       >
@@ -295,7 +310,7 @@ export default function ListaEspera() {
                 className="w-[48%] bg-green-600 text-white hover:bg-green-400 rounded"
                 onClick={() => {
                   setShowModalConfirm(false);
-                  handleAceptarEstudiante(selectedEstudiante);
+                  handleAceptarEstudiante(selectedEstudiante, estudianteCI);
                 }}
               >
                 Aceptar

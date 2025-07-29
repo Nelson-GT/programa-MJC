@@ -156,43 +156,27 @@ export default function index() {
 
   const handleRegistrar = async (): Promise<void> => {
     try {
-      const res = await fetch("/api/estudiante", {
+      const res = await fetch("http://localhost:3200/api/estudiante/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nombre: nombreEstudiante || "",
-          fecha_nacimiento: fechaNacimiento || "",
-          genero: genero || "",
-          ci: cedula || "",
-          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
-          institucion_educacional: institucion || "",
-          ocupacion: ocupacion || "",
-          profesion: profesion || "",
-          lugar_trabajo: lugarTrabajo || "",
-          direccion_residencial: direccion || "",
-          email: email || "",
-          alergias: alergias || "",
-          antecedentes: antecedentes || "",
-          antecedentes_especificados:alergiasEspecificadas || "",
+         nombre: nombreEstudiante || "",
+         genero: genero || "",
+         cedula: cedula || "",
+         fecha_nacimiento: fechaNacimiento || "",
+         email: email || "",
+         direccion_residencial: direccion || "",
+         telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
           emergencia_nombre:contactoEmergencia || "",
           numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
-
           reperesentante_nombre: representanteNombre || "",
           reperesentante_ci: representanteCI || "",
           reperesentante_parentesco: parentesco || "",
           representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || "",
-          reperesentante_ocupacion: representanteOcupacion || "",
           reperesentante_profesion: representanteProfesion || "",
-          reperesentante_lugar_trabajo:representanteLugarTrabajo || "",
-          reperesentante_direccion: representanteDireccion || "",
-          reperesentante_email: representanteEmail || "",
-
           instrumentos: instrumentosData || "",
-          teoricas: teoricasData || "",
-          otros: otrosData || "",
-          autorizacion:autorizacion || "",
         }),
       })
 
@@ -201,20 +185,6 @@ export default function index() {
         console.log(`Ha ocurrido un Error: ${resultado.message}`)
         alert("Ha ocurrido un Error. Por favor, intentelo más tarde");
         return
-      }
-      const idEstudiante = resultado.id;
-      const resLista = await fetch('/api/lista_espera', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_estudiante: idEstudiante }),
-      });
-
-      const resultadoLista = await resLista.json();
-
-      if (resLista.ok) {
-        alert('Estudiante registrado correctamente');
-      } else {
-        alert("Ha ocurrido un error, por favor, vuelva a intentarlo más tarde");
       }
     } catch (err) {
       console.error(err);
@@ -247,7 +217,8 @@ export default function index() {
     const form = e.currentTarget;
     if (form.checkValidity()) {
       setShowModal(true);
-      handleGenerarPDF()
+      handleGenerarPDF();
+      handleRegistrar();
     }
   };
 

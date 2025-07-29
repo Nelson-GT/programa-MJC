@@ -3,109 +3,64 @@ import { useEffect, useState } from 'react';
 import Button from "@/components/ui/Button"
 import Navbar from "@/components/Navbar"
 
-export default function Login() {
-
-  interface ListaEsperaItem {
+export default function ListaEspera() {
+  interface EstudianteListaEspera {
     id: number;
-    id_estudiante: number | null;
-  }
-
-  interface Estudiante {
-    id: number;
-    id_usuario: number | null;
-    id_materias: number | null;
     nombre: string;
     fecha_nacimiento: string;
-    sexo: string;
-    ci: string;
+    cedula: string;
+    genero: string;
+    instrumento: string;
     telefono: string;
-    institucion_educacional: string;
-    ocupacion: string;
-    profesion: string;
-    lugar_trabajo: string;
-    direccion_residencial: string;
     email: string;
-    alergico: string;
-    antecedentes: string;
-    antecedentes_especificados: string;
-    emergencia_nombre: string;
-    emergencia_telefono: string;
-    reperesentante_nombre: string;
-    reperesentante_ci: string;
-    reperesentante_parentesco: string;
-    reperesentante_telefono: string;
-    reperesentante_ocupacion: string;
-    reperesentante_profesion: string;
-    reperesentante_lugar_trabajo: string;
-    reperesentante_direccion: string;
-    reperesentante_email: string;
-    instrumentos: string;
-    teorica: string;
-    otros: string;
+    direccion: string;
+    nombre_emergencia: string;
+    numero_emergencia: string;
+    nombre_representante: string;
+    cedula_representante: string;
+    parentesco: string;
+    telefono_representante: string;
+    ocupacion_representante: string;
+    estado: number;
+    teorica?: string;
+    otros?: string;
   }
 
-  const [lista, setLista] = useState<ListaEsperaItem[]>([]);
-  const [Estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
+  const [estudiantes, setEstudiantes] = useState<EstudianteListaEspera[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showModalConfirm, setShowModalConfirm] = useState<boolean>(false);
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [selectedEstudiante, setSelectedEstudiante] = useState<number>(0);
 
-  const fetchLista = async () => {
+  const fetchListaEspera = async () => {
     try {
-      const res = await fetch('/api/lista_espera');
-      const data = await res.json();
-
-      if (!res.ok) {
-        console.log(`Ha ocurrido un error: ${data.message}`);
-        return;
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch('http://localhost:3200/api/lista_espera');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al cargar la lista de espera');
       }
-
-      setLista(data.data);
+      
+      const data = await response.json();
+      setEstudiantes(data.data);
     } catch (err) {
-      console.error('Error al obtener lista_espera:', err);
+      console.error('Error:', err);
+      setError('Error al cargar la lista de espera');
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchLista();
+    fetchListaEspera();
   }, []);
 
-  const fetchEstudiantesPorLista = async () => {
-    if (lista.length === 0) {
-      console.log("La lista está vacía.");
-      return;
-    }
-    if (lista.length === 1) {
-      try {
-        const res = await fetch(`/api/estudiante?id=${lista[0].id_estudiante}`);
-        const data = await res.json();
-        if (!res.ok) {
-          console.log(`Error al obtener estudiante único: ${data.message}`);
-        } else {
-          setEstudiantes(data.data);
-        }
-      } catch (err) {
-        console.error("Error al obtener estudiante único:", err);
-      }
-    } else {
-      const params = lista.map((e) => `id=${e.id_estudiante}`).join('&');
-      try {
-        const res = await fetch(`/api/estudiante?${params}`);
-        const data = await res.json();
-        if (!res.ok) {
-          console.log(`Error al obtener estudiantes: ${data.message}`);
-        } else {
-          setEstudiantes(data.data);
-        }
-      } catch (err) {
-        console.error("Error al obtener estudiantes:", err);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchEstudiantesPorLista();
-  }, [lista]);
-
-  
   const calcularEdad = (fecha: string) => {
+    if (!fecha) return 0;
     const nacimiento = new Date(fecha);
     const hoy = new Date();
     let edad = hoy.getFullYear() - nacimiento.getFullYear();
@@ -116,9 +71,8 @@ export default function Login() {
     return edad;
   };
 
-  const handleGenerarPDF = async (indice: number): Promise<void> => {
+  const handleGenerarPDF = async (estudiante: EstudianteListaEspera): Promise<void> => {
     try {
-      const estudiante = Estudiantes[indice];
       const res = await fetch("/api/pdf_registro", {
         method: "POST",
         headers: {
@@ -128,246 +82,220 @@ export default function Login() {
           nombreEstudiante: estudiante.nombre || "",
           fechaNacimiento: estudiante.fecha_nacimiento || "",
           edad: calcularEdad(estudiante.fecha_nacimiento) || "",
-          sexo: estudiante.sexo || "",
-          cedula: estudiante.ci || "",
+          sexo: estudiante.genero || "",
+          cedula: estudiante.cedula || "",
           telefono: estudiante.telefono || "",
-          institucion: estudiante.institucion_educacional || "",
-          ocupacion: estudiante.ocupacion || "",
-          profesion: estudiante.profesion || "",
-          lugarTrabajo: estudiante.lugar_trabajo || "",
-          direccion: estudiante.direccion_residencial || "",
+          direccion: estudiante.direccion || "",
           email: estudiante.email || "",
-          alergias: estudiante.alergico || "",
-          antecedentes: estudiante.antecedentes || "",
-          alergiasEspecificadas:estudiante.antecedentes_especificados || "",
-          contactoEmergencia:estudiante.emergencia_nombre || "",
-          numeroEmergencia:estudiante.emergencia_telefono || "",
-
-          representanteNombre: estudiante.reperesentante_nombre || "",
-          representanteCI: estudiante.reperesentante_ci || "",
-          parentesco: estudiante.reperesentante_parentesco || "",
-          representanteTelefono: estudiante.reperesentante_telefono || "",
-          representanteOcupacion: estudiante.reperesentante_ocupacion || "",
-          representanteProfesion: estudiante.reperesentante_profesion || "",
-          representanteLugarTrabajo: estudiante.reperesentante_lugar_trabajo || "",
-          representanteDireccion: estudiante.reperesentante_direccion || "",
-          representanteEmail: estudiante.reperesentante_email || "",
-
-          instrumentosData: estudiante.instrumentos || "",
-          teoricasData: estudiante.teorica || "",
-          otrosData: estudiante.otros || "",
+          contactoEmergencia: estudiante.nombre_emergencia || "",
+          numeroEmergencia: estudiante.numero_emergencia || "",
+          representanteNombre: estudiante.nombre_representante || "",
+          representanteCI: estudiante.cedula_representante || "",
+          parentesco: estudiante.parentesco || "",
+          representanteTelefono: estudiante.telefono_representante || "",
+          representanteOcupacion: estudiante.ocupacion_representante || "",
+          instrumentosData: estudiante.instrumento || "",
           autorizacion: "Si",
           firmaCedula: "Prueba de firma y cédula",
         }),
-      })
+      });
 
-      if (!res.ok) throw new Error("Error generando PDF")
+      if (!res.ok) throw new Error("Error generando PDF");
 
-      const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      window.open(url, "_blank")
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
 
-      const link = document.createElement("a")
-      link.href = url
-      link.download = `planilla-${Date.now()}.pdf`
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `planilla-${Date.now()}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-      URL.revokeObjectURL(url)
+      URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error al generar PDF:", error)
+      console.error("Error al generar PDF:", error);
+      alert("Error al generar el PDF");
     }
-  }
+  };
 
-  const crearUsuario = async (indice: number): Promise<void> => {
+  const handleAceptarEstudiante = async (idEstudiante: number) => {
     try {
-      const estudiante = Estudiantes[indice];
-
-      // crea un usuario
-      const res = await fetch("/api/usuario", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      // Aquí iría la lógica para aceptar al estudiante
+      // Por ejemplo, crear usuario y actualizar estado
+      const res = await fetch('/api/lista_espera', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: estudiante.email,
-          contraseña: estudiante.ci || "123456789",
-          rol: "estudiante",
-          id_datos: estudiante.id || "",
+          id_estudiante: idEstudiante,
+          estado: 0 // Cambiar estado a inactivo
         }),
-      })
-      const resultado = await res.json();
+      });
+      
       if (!res.ok) {
-        console.log(`Ha ocurrido un error: ${resultado.message}`);
-        return;
-      }
-      const id_usuario = resultado.id;
-
-      // actualiza el campo id_usuario en la tabla estudiante
-      const resEstudiante = await fetch('/api/estudiante', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: estudiante.id,
-          id_usuario: id_usuario
-        }),
-      });
-      const resultadoEstudiante = await resEstudiante.json();
-      if (!resEstudiante.ok) {
-        console.log(`Ha ocurrido un error: ${resultadoEstudiante.message}`);
-        return;
+        const errorData = await res.json();
+        throw new Error(errorData.message);
       }
 
-      // actualiza la lista de espera
-      const resLista = await fetch('/api/lista_espera', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id_estudiante: estudiante.id,
-          estado: 0
-        }),
-      });
-      const resultadoLista = await resLista.json();
-      if (!resLista.ok) {
-        console.log(`Ha ocurrido un error: ${resultadoLista.message}`);
-        return;
-      }
-      await fetchEstudiantesPorLista()
-      await fetchLista()
-      alert("Usuario creado exitosamente.")
-
+      // Actualizar la lista
+      await fetchListaEspera();
+      alert("Estudiante aceptado exitosamente");
     } catch (err) {
       console.error(err);
+      alert("Error al aceptar estudiante");
     }
-  }
+  };
 
-  const eliminarUsuario = async (indice: number): Promise<void> => {
+  const handleRechazarEstudiante = async (idEstudiante: number) => {
     try {
-      const estudiante = Estudiantes[indice];
-      // actualiza la lista de espera
-      const resLista = await fetch('/api/lista_espera', {
-        method: 'PUT',
+      // Aquí iría la lógica para rechazar al estudiante
+      const res = await fetch('http://localhost:3200/api/lista_espera', {
+        method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id_estudiante: estudiante.id,
-          estado: 0
+          id_estudiante: idEstudiante
         }),
       });
-      const resultadoLista = await resLista.json();
-      if (!resLista.ok) {
-        console.log(`Ha ocurrido un error: ${resultadoLista.message}`);
-        return;
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message);
       }
-      await fetchEstudiantesPorLista()
-      await fetchLista()
-      alert("Usuario eliminado exitosamente.")
 
+      // Actualizar la lista
+      await fetchListaEspera();
+      alert("Estudiante rechazado exitosamente");
     } catch (err) {
       console.error(err);
+      alert("Error al rechazar estudiante");
     }
-  }
-
-  const [showModalConfirm, setShowModalConfir] = useState<boolean>(false);
-  const [showModalDelete, setshowModalDelete] = useState<boolean>(false);
-  const [aux, setAux] = useState<number>(0)
+  };
 
   return (
     <>
       <Navbar />
       <div className="w-full flex flex-col items-center justify-center px-40">
         <div className="text-center mb-5">
-        <h1><span className="font-bold text-3xl text-gray-700">Lista de Espera</span></h1>
-        <h3><span className="font-bold text-xl text-gray-600">Programa de Formación Musical<br></br>"Maestro José Calabrese"</span></h3>
+          <h1><span className="font-bold text-3xl text-gray-700">Lista de Espera</span></h1>
+          <h3><span className="font-bold text-xl text-gray-600">Programa de Formación Musical<br />"Maestro José Calabrese"</span></h3>
         </div>
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
-          <thead>
-        <tr>
-          <th className="px-4 py-2 bg-gray-100">ID</th>
-          <th className="px-4 py-2 bg-gray-200">Nombre</th>
-          <th className="px-4 py-2 bg-gray-100">Edad</th>
-          <th className="px-4 py-2 bg-gray-100">Cedula</th>
-          <th className="px-4 py-2 bg-gray-200">Instrumento</th>
-          <th className="px-4 py-2 bg-gray-100">Teórica</th>
-          <th className="px-4 py-2 bg-gray-200">Otros</th>
-          <th className="px-4 py-2 bg-gray-100">Acciones</th>
-        </tr>
-          </thead>
-          <tbody>
-          {Estudiantes.length === 0 ? (
-            <tr>
-              <td colSpan={7} className="px-4 py-2 text-center text-gray-500">
-                No hay estudiantes cargados.
-              </td>
-            </tr>
-          ) : (
-            Estudiantes.map((estudiante: any, indice) => (
-              <tr key={estudiante.id}>
-                <td className="px-4 py-2 border-b text-center font-bold">{estudiante.id}</td>
-                <td className="px-4 py-2 border-b text-center font-bold">{estudiante.nombre}</td>
-                <td className="px-4 py-2 border-b text-center font-bold">
-                  {estudiante.fecha_nacimiento ? calcularEdad(estudiante.fecha_nacimiento) : '—'}
-                </td>
-                <td className="px-4 py-2 border-b text-center font-bold">{estudiante.ci || '—'}</td>
-                <td className="px-4 py-2 border-b text-center font-bold">{estudiante.instrumentos || '—'}</td>
-                <td className="px-4 py-2 border-b text-center font-bold">{estudiante.teorica || '—'}</td>
-                <td className="px-4 py-2 border-b text-center font-bold">{estudiante.otros || '—'}</td>
-                <td className="px-4 py-2 border-b text-center">
-                  <Button className="px-2 py-1 mr-2 rounded-full hover:bg-gray-100"
-                          onClick={() => handleGenerarPDF(indice)}
-                  >
-                    <img
-                      src="/edit.svg"
-                      alt="Icono de check"
-                      className="h-7 w-7"
-                    />
-                  </Button>
-                  <Button className="px-2 py-1 rounded-full hover:bg-green-100"
-                          onClick={() => {
-                            setAux(indice);
-                            setShowModalConfir(true)}}>
-                    <img
-                      src="/check.svg"
-                      alt="Icono de check"
-                      className="h-7 w-7"
-                    />
-                  </Button>
-                  <Button className="px-2 py-1 ml-2 rounded-full hover:bg-red-100"
-                          onClick={() => {
-                            setAux(indice);
-                            setshowModalDelete(true)}}>
-                    <img
-                      src="/delete.svg"
-                      alt="Icono de check"
-                      className="h-7 w-7"
-                    />
-                  </Button>
-                </td>
+        
+        {loading ? (
+          <div className="text-center py-8">
+            <p>Cargando estudiantes...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-8 text-red-500">
+            <p>{error}</p>
+            <button 
+              onClick={fetchListaEspera}
+              className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Reintentar
+            </button>
+          </div>
+        ) : (
+          <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 bg-gray-100">ID</th>
+                <th className="px-4 py-2 bg-gray-200">Nombre</th>
+                <th className="px-4 py-2 bg-gray-100">Edad</th>
+                <th className="px-4 py-2 bg-gray-200">Cédula</th>
+                <th className="px-4 py-2 bg-gray-100">Instrumento</th>
+                <th className="px-4 py-2 bg-gray-200">Teórica</th>
+                <th className="px-4 py-2 bg-gray-100">Otros</th>
+                <th className="px-4 py-2 bg-gray-200">Acciones</th>
               </tr>
-            ))
-          )}
-        </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {estudiantes.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="px-4 py-2 text-center text-gray-500">
+                    No hay estudiantes en lista de espera
+                  </td>
+                </tr>
+              ) : (
+                estudiantes.map((estudiante) => (
+                  <tr key={estudiante.id}>
+                    <td className="px-4 py-2 border-b text-center">{estudiante.id}</td>
+                    <td className="px-4 py-2 border-b text-center">{estudiante.nombre}</td>
+                    <td className="px-4 py-2 border-b text-center">
+                      {calcularEdad(estudiante.fecha_nacimiento)}
+                    </td>
+                    <td className="px-4 py-2 border-b text-center">{estudiante.cedula || '—'}</td>
+                    <td className="px-4 py-2 border-b text-center">{estudiante.instrumento || '—'}</td>
+                    <td className="px-4 py-2 border-b text-center">{estudiante.teorica || '—'}</td>
+                    <td className="px-4 py-2 border-b text-center">{estudiante.otros || '—'}</td>
+                    <td className="px-4 py-2 border-b text-center flex justify-center space-x-2">
+                      <Button 
+                        className="px-2 py-1 mr-2 rounded-full hover:bg-gray-100"
+                        onClick={() => handleGenerarPDF(estudiante)}
+                      >
+                        <img
+                          src="/edit.svg"
+                          alt="Generar PDF"
+                          className="h-7 w-7"
+                        />
+                      </Button>
+                      <Button 
+                        className="px-2 py-1 rounded-full hover:bg-green-100"
+                        onClick={() => {
+                          setSelectedEstudiante(estudiante.id);
+                          setShowModalConfirm(true);
+                        }}
+                      >
+                        <img
+                          src="/check.svg"
+                          alt="Aceptar estudiante"
+                          className="h-7 w-7"
+                        />
+                      </Button>
+                      <Button 
+                        className="px-2 py-1 ml-2 rounded-full hover:bg-red-100"
+                        onClick={() => {
+                          setSelectedEstudiante(estudiante.id);
+                          setShowModalDelete(true);
+                        }}
+                      >
+                        <img
+                          src="/delete.svg"
+                          alt="Rechazar estudiante"
+                          className="h-7 w-7"
+                        />
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
+
       {/* Modal de confirmación */}
       {showModalConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30 backdrop-blur-sm">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
             <p className="text-center mb-6">
-              Estás seguro de que desea <span className="text-green-600">Aceptar</span> a<br></br><span className="font-bold text-lg">{Estudiantes[aux].nombre}.</span>
+              ¿Estás seguro de que deseas <span className="text-green-600">aceptar</span> a<br />
+              <span className="font-bold text-lg">
+                {estudiantes.find(e => e.id === selectedEstudiante)?.nombre}
+              </span>?
             </p>
             <div className="flex justify-between mt-4">
               <Button
                 className="w-[48%] bg-gray-200 hover:bg-gray-300 rounded"
-                onClick={() => setShowModalConfir(false)}
+                onClick={() => setShowModalConfirm(false)}
               >
                 Volver
               </Button>
               <Button
                 className="w-[48%] bg-green-600 text-white hover:bg-green-400 rounded"
                 onClick={() => {
-                setShowModalConfir(false);
-                eliminarUsuario(aux)
+                  setShowModalConfirm(false);
+                  handleAceptarEstudiante(selectedEstudiante);
                 }}
               >
                 Aceptar
@@ -376,25 +304,29 @@ export default function Login() {
           </div>
         </div>
       )}
-      {/* Modal para Denegar */}
+
+      {/* Modal para rechazar */}
       {showModalDelete && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30 backdrop-blur-sm">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
             <p className="text-center mb-6">
-              Estás seguro de que desea <span className="text-red-600">Rechazar</span> a<br></br><span className="font-bold text-lg">{Estudiantes[aux].nombre}</span>.
+              ¿Estás seguro de que deseas <span className="text-red-600">rechazar</span> a<br />
+              <span className="font-bold text-lg">
+                {estudiantes.find(e => e.id === selectedEstudiante)?.nombre}
+              </span>?
             </p>
             <div className="flex justify-between mt-4">
               <Button
                 className="w-[48%] bg-gray-200 hover:bg-gray-300 rounded"
-                onClick={() => setshowModalDelete(false)}
+                onClick={() => setShowModalDelete(false)}
               >
                 Volver
               </Button>
               <Button
                 className="w-[48%] bg-red-600 text-white hover:bg-red-700 rounded"
                 onClick={() => {
-                setshowModalDelete(false);
-                eliminarUsuario(aux)
+                  setShowModalDelete(false);
+                  handleRechazarEstudiante(selectedEstudiante);
                 }}
               >
                 Rechazar
@@ -404,5 +336,5 @@ export default function Login() {
         </div>
       )}
     </>
-  )
-}
+  );
+}``

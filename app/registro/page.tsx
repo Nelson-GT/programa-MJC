@@ -181,6 +181,7 @@ export default function index() {
       })
 
       const resultado = await res.json();
+      alert("Registro exitoso")
       if (!res.ok) {
         console.log(`Ha ocurrido un Error: ${resultado.message}`)
         alert("Ha ocurrido un Error. Por favor, intentelo más tarde");
@@ -218,7 +219,6 @@ export default function index() {
     if (form.checkValidity()) {
       setShowModal(true);
       handleGenerarPDF();
-      handleRegistrar();
     }
   };
 

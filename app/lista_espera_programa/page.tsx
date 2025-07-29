@@ -291,7 +291,7 @@ export default function ListaEspera() {
 
       {/* Modal de confirmación */}
       {showModalConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30 backdrop-blur-sm">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
             <p className="text-center mb-6">
               ¿Estás seguro de que deseas <span className="text-green-600">aceptar</span> a<br />
@@ -322,7 +322,7 @@ export default function ListaEspera() {
 
       {/* Modal para rechazar */}
       {showModalDelete && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30 backdrop-blur-sm">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
             <p className="text-center mb-6">
               ¿Estás seguro de que deseas <span className="text-red-600">rechazar</span> a<br />

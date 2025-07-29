@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         }
 
         const placeholders = ids.map(() => '?').join(', ');
-        const query = `SELECT * FROM estudiante WHERE id IN (${placeholders})`;
+        const query = `SELECT * FROM estudiantes WHERE id IN (${placeholders})`;
 
         const [rows]: any = await db.query(query, ids);
 

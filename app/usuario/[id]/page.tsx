@@ -94,15 +94,15 @@ export default function Estudiante() {
     
   const fetchEstudiante = async () => {
     try {
-      const res = await fetch(`/api/estudiantes?id=${id}`);
+      const res = await fetch(`/api/vista_usuario?id=${id}`);
       const data = await res.json();
 
       if (!res.ok) {
         console.log(`Ha ocurrido un error: ${data.message}`);
         return;
       }
-
-      setEstudiante(data.data);
+      setEstudiante(data.data[0]);
+      console.log("Datos del estudiante:", data.data);
     } catch (err) {
       console.error('Error al obtener lista_espera:', err);
     }

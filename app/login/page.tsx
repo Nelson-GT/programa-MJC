@@ -37,7 +37,6 @@ export default function Login() {
     });
     const result = await res.json();
     if (!res.ok) throw new Error(result.message);
-    console.log('Login exitoso, ID del usuario:', result.userId);
     router.push(`/usuario/${result.userId}`);
   };
 

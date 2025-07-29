@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const query = `
-      INSERT INTO usuario (
+      INSERT INTO users (
         id_estudiante, password 
       ) VALUES (?, ?)
     `;

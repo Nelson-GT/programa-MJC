@@ -5,8 +5,8 @@ const Brand = ({ ...props }) => (
         src="/logo.png"
         alt="Logo Orquesta Sinfónica de Carabobo"
         {...props}
-        width={66}
-        height={38}
+        width={50}
+        height={22}
         priority
     />
 )

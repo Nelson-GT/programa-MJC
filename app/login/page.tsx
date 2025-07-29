@@ -39,45 +39,43 @@ export default function Login() {
       <div className="w-full flex flex-col items-center justify-center px-4 py-8">
         <div className="max-w-sm w-full text-gray-600">
           <div className="text-center">
-            <h1 className="mt-5 text-gray-800 text-2xl font-bold sm:text-3xl">
+            <h1 className="mt-5 text-gray-800 text-3xl font-bold sm:text-3xl">
               Iniciar Sesión
             </h1>
-            <p className="text-gray-500 mt-2 text-sm">
-              Accede con tu usuario o correo y contraseña
-            </p>
           </div>
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
             <div>
-              <label className="font-medium">Usuario o Correo</label>
+              <label className="font-medium text-gray-700">Usuario *</label>
               <Input
                 type="text"
                 required
-                placeholder="usuario o correo"
+                placeholder="Usuario / Correo electrónico"
                 className="w-full mt-3 focus:border-blue-600"
                 id="username"
               />
             </div>
             <div>
-              <label className="font-medium">Contraseña</label>
+              <label className="font-medium text-gray-700">Contraseña *</label>
               <Input
                 type="password"
                 required
-                placeholder="contraseña"
+                placeholder="Contraseña"
                 className="w-full mt-3 focus:border-blue-600"
                 id="password"
               />
             </div>
-            <div className="flex justify-end">
-              <a href="#" className="text-blue-600 hover:underline text-sm">
-                ¿Olvidaste tu contraseña?
-              </a>
-            </div>
             <Button
               type="submit"
-              className="w-full text-white bg-blue-600 hover:bg-blue-500 ring-offset-2 ring-blue-600 focus:ring shadow rounded-lg"
+              className="w-full text-white ring-offset-2 ring-blue-600 focus:ring shadow rounded-lg"
+              style={{backgroundColor: "rgba(112, 3, 3, 1)"}}
             >
               Ingresar
             </Button>
+            <div className="flex justify-center">
+              <a href="#" className="text-gray-600 hover:underline text-sm">
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
           </form>
         </div>
       </div>

@@ -9,7 +9,7 @@ interface NavHeaderProps {
 }
 
 const NavHeader = ({ onClick, state, menuBtnEl }: NavHeaderProps) => (
-    <div className="flex items-center justify-between py-1 md:block">
+    <div className="flex items-center justify-between py-1 px-4 md:block">
         <Link href="/" >
         <Brand />
         </Link>

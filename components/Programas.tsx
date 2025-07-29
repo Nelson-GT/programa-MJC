@@ -10,20 +10,21 @@ const CTA = () => {
                     <h2 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
                         Forma parte de nuestros programas
                     </h2>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 text-justify mt-8">
                         La Estudiantina del Programa de Formación Musical Maestro José Calabrese te invita a ser parte de nuestra armonía!
 
-¿Te apasiona la música y quieres llevar tu talento al siguiente nivel? ¡Esta es tu oportunidad! Ven y aprende mandolina, cuatro o guitarra.
+                        ¿Te apasiona la música y quieres llevar tu talento al siguiente nivel? ¡Esta es tu oportunidad! Ven y aprende mandolina, cuatro o guitarra.
 
-Aquí podrás:
-Desarrollar tus habilidades musicales con la guía de nuestros maestros.
-Compartir el escenario y vivir experiencias inolvidables.
-Formar parte de una familia que celebra la música y la amistad.
+                        Aquí podrás:
+                        Desarrollar tus habilidades musicales con la guía de nuestros maestros.
+                        Compartir el escenario y vivir experiencias inolvidables.
+                        Formar parte de una familia que celebra la música y la amistad.
                     </p>
                     <div className="pt-1">
                         <NavLink
                             href="/registro"
-                            className="inline-flex items-center gap-x-2 font-medium text-sm text-white bg-blue-600 hover:bg-blue-500 active:bg-blue-700 "
+                            className="inline-flex items-center gap-x-2 font-medium text-sm text-white mt-3"
+                            style={{backgroundColor: "rgba(112, 3, 3, 1)"}}
                         >
                             Inscribirse
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
@@ -33,7 +34,7 @@ Formar parte de una familia que celebra la música y la amistad.
                     </div>
                 </div>
                 <div className="flex-none w-full md:max-w-xl">
-                    <Image src="/imagen1.jpg" alt="chart" width={600} height={400} className='w-full shadow-lg rounded-lg border' />
+                    <Image src="/imagen1.jpg" alt="chart" width={600} height={600} className='w-full shadow-lg rounded-lg border' />
                 </div>
             </div>
         </SectionWrapper>

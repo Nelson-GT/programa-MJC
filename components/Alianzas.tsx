@@ -28,7 +28,7 @@ const logos = [
 const LogoGrid = () => (
     <SectionWrapper>
         <div className="custom-screen">
-            <h2 className="font-semibold text-sm text-gray-800 text-center">
+            <h2 className="font-semibold text-3xl text-gray-800 text-center">
                 Nuestras Alianzas
             </h2>
             <div className="mt-8 flex justify-center">
@@ -36,13 +36,13 @@ const LogoGrid = () => (
                     {
                         logos.map((item, idx) => (
                             <li key={idx} className="flex justify-center items-center">
-                                <div style={{ width: 100, height: 100, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: 150, height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Image
                                         src={item.src}
                                         alt={item.alt}
                                         style={{ objectFit: 'contain' }}
-                                        width={100}
-                                        height={100}
+                                        width={150}
+                                        height={150}
                                     />
                                 </div>
                             </li>

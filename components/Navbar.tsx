@@ -29,7 +29,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <header className="bg-[#721422]  relative p-0">
+        <header className="bg-[#721422]  relative p-0 mb-12">
             <div className="custom-screen md:hidden">
                 <NavHeader
                 menuBtnEl={menuBtnEl}
@@ -53,7 +53,7 @@ const Navbar = () => {
                 >
                     <ul className="justify-center items-center space-y-6 md:flex md:space-x-6 md:space-y-0">
                     {navigation.map((item, idx) => (
-                        <li key={idx} className="hover:text-gray-900">
+                        <li key={idx} className="hover:text-gray-900 text-sm">
                         <Link href={item.href} className="block" scroll={false} >
                             {item.name}
                         </Link>

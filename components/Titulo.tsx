@@ -49,7 +49,7 @@ const Hero = () => {
                     Desde el corazón de Carabobo, resonando con historia y pasión
                 </p>
                 <div className="max-w-3xl mx-auto ">
-            <div className="relative h-80 sm:h-86 rounded-lg overflow-hidden shadow-xl ">
+            <div className="relative h-80 sm:h-86 rounded-lg overflow-hidden shadow-xl mt-10">
               {/* Contenedor de slides */}
               <div className="relative h-full w-full">
                 {slides.map((slide, index) => (
@@ -106,7 +106,8 @@ const Hero = () => {
                 <div className="flex items-center justify-center gap-x-3 font-medium text-sm">
                     <NavLink
                         href="#reseña-historica"
-                        className="flex items-center gap-x-2 text-white bg-blue-600 hover:bg-blue-500 active:bg-blue-700 "
+                        className="flex items-center gap-x-2 text-white"
+                        style={{backgroundColor: "rgba(112, 3, 3, 1)"}}
                     >
                         Sobre nosotros
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">

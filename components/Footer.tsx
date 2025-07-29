@@ -11,13 +11,13 @@ const Footer = () => (
     <footer className="pt-32 mx-5 md:mx-10 sm:pt-44">
         <div className="custom-screen text-gray-600">
             <div className="flex flex-wrap gap-y-10 items-center justify-between">
-                <div className="space-y-4">
+                <div className="space-y-2">
                     <Link href="/" className="inline-block" >
                         <Brand />
                     </Link>
-                    <h2 className="text-gray-800 text-lg font-semibold sm:text-2xl">Propuesta de página</h2>
+                    <p className="text-gray-800 text-sm font-semibold sm:text-xl">Programa de Formación Musical <br /> Maestro José Calabrese</p>
                     <p className="max-w-md">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate, minus.
+                        Salón MZ-08, Hotel Hesperia WTC, Naguanagua, Carabobo
                     </p>
                     <div className="pt-2 flex items-center gap-x-6 text-gray-400">
                         <a href="https://www.facebook.com/sinfonicarabobo" target="_blank" aria-label="Social media">
@@ -31,10 +31,9 @@ const Footer = () => (
                         </a>
                     </div>
                 </div>
-                
             </div>
-            <div className="mt-10 py-10 border-t flex-row-reverse items-center justify-between sm:flex">
-                <ul className="flex flex-wrap items-center gap-4 sm:text-sm">
+            <div className="mt-8 py-10 items-center border-t" style={{borderColor: "rgba(205, 205, 205, 1)"}}>
+                <ul className="flex flex-wrap items-center gap-4 sm:text-sm mb-8">
                     {
                         navigation.map((item, idx) => (
                             <li key={idx} className="font-medium text-gray-700 hover:text-gray-900 duration-150">
@@ -45,7 +44,7 @@ const Footer = () => (
                         ))
                     }
                 </ul>
-                <p className="mt-6 sm:mt-0">© 2025 Orquesta Sinfonica de Carabobo. Todos los derechos reservados.</p>
+                <p className="mt-12 sm:mt-0 w-full text-center text-sm"> Copyright © 2025 Orquesta Sinfónica de Carabobo. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>

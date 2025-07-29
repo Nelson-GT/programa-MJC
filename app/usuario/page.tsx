@@ -56,7 +56,7 @@ export default function Estudiante() {
       <div className="w-full flex flex-col items-center px-4 py-8">
 
         {/* Información Personal */}
-        <div className="bg-white shadow rounded-lg p-6 mb-8">
+        <div className="bg-white rounded-xl p-12 mb-8">
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Información Personal</h2>
           <div className=" flex flex-col md:flex-row items-center gap-8 w-full max-w-5xl mb-8">
             <img

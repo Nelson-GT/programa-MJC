@@ -4,35 +4,26 @@ import db from '@/lib/db';
 export async function POST(req: NextRequest) {
   try {
     const {
-      email,
+      id_estudiante,
       contraseña,
-      rol = "estudiante",
-      id_datos = null,
-      id_notas = null,
-      estado = 1,
     } = await req.json();
 
-    if (!email) {
+    if (!id_estudiante) {
       return NextResponse.json(
-        { message: 'Falta el campo obligatorio: email' },
+        { message: 'Falta el campo obligatorio: id_estudiante' },
         { status: 400 }
       );
     }
 
     const query = `
       INSERT INTO usuario (
-        email, contraseña, rol,
-        id_datos, id_notas, estado
-      ) VALUES (?, ?, ?, ?, ?, ?)
+        id_estudiante, password 
+      ) VALUES (?, ?)
     `;
 
     const values = [
-      email,
-      contraseña,
-      rol,
-      id_datos,
-      id_notas,
-      estado,
+      id_estudiante,
+      contraseña
     ];
 
     const [result]: any = await db.execute(query, values);

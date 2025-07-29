@@ -2,9 +2,12 @@
 import Head from "next/head"
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
+import { useParams } from "next/navigation"
+import React, { useState, useEffect } from "react"
+
+const foto = "/musico.jpg";
 
 const estudiante = {
-  foto: "/musico.jpg",
   nombre: "Pedro Perez",
   cedula: "12345678",
   telefono: "04129999999",
@@ -47,6 +50,67 @@ function agruparPorMateria(notas: Nota[]): Record<string, Nota[]> {
 const notasPorMateria = agruparPorMateria(notas_prueba);
 
 export default function Estudiante() {
+  const { id } = useParams()
+  const [estudiante, setEstudiante] = useState<Estudiante | null>(null);
+
+  interface Estudiante {
+    id: number;
+    nombre: string;
+    genero: string;
+    cedula: string;
+    fecha_nacimiento: string;
+    correo_electronico: string;
+    direccion: string;
+    fecha_ingreso: string;
+    instrumento: string;
+    codigo_instrumento: string;
+    nombre_representante: string;
+    ocupacion_representante: string;
+    parentesco: string;
+    cedula_representante: string;
+    telefono_estudiantes: string;
+    reperesentante_telefono: string;
+    nombre_emergencia: string;
+    numero_emergencia: string;
+    activo:number;
+
+/*
+    institucion_educacional: string;
+    ocupacion: string;
+    profesion: string;
+    lugar_trabajo: string;
+    alergico: string;
+    antecedentes: string;
+    antecedentes_especificados: string;
+    reperesentante_profesion: string;
+    reperesentante_lugar_trabajo: string;
+    reperesentante_direccion: string;
+    reperesentante_email: string;
+    teorica: string;
+    otros: string;
+    */
+  }
+
+    
+  const fetchEstudiante = async () => {
+    try {
+      const res = await fetch(`/api/estudiantes?id=${id}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.log(`Ha ocurrido un error: ${data.message}`);
+        return;
+      }
+
+      setEstudiante(data.data);
+    } catch (err) {
+      console.error('Error al obtener lista_espera:', err);
+    }
+  };
+  useEffect(() => {
+    fetchEstudiante();
+  }, []);
+
   return (
     <>
       <Head>
@@ -60,25 +124,25 @@ export default function Estudiante() {
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Información Personal</h2>
           <div className=" flex flex-col md:flex-row items-center gap-8 w-full max-w-5xl mb-8">
             <img
-              src={estudiante.foto}
-              alt={estudiante.nombre}
+              src={foto}
+              alt={estudiante?.nombre || "Foto del Estudiante"}
               className="w-36 h-36 rounded-full object-cover border"
             />
             <div className="flex-1 flex flex-col md:flex-row gap-8 w-full">
               <div className="flex-1 mb-4 md:mb-0">
-                <div className="text-gray-600 mb-1"><b>Nombre:</b> {estudiante.nombre}</div>
-                <div className="text-gray-600 mb-1"><b>Cédula:</b> {estudiante.cedula}</div>
-                <div className="text-gray-600 mb-1"><b>Teléfono:</b> {estudiante.telefono}</div>
-                <div className="text-gray-600"><b>Email:</b> {estudiante.email}</div>
+                <div className="text-gray-600 mb-1"><b>Nombre:</b> {estudiante?.nombre}</div>
+                <div className="text-gray-600 mb-1"><b>Cédula:</b> {estudiante?.cedula}</div>
+                <div className="text-gray-600 mb-1"><b>Teléfono:</b> {estudiante?.telefono_estudiantes}</div>
+                <div className="text-gray-600"><b>Email:</b> {estudiante?.correo_electronico}</div>
               </div>
               <div className="flex-1 mb-4 md:mb-0">
-                <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante.instrumento}</div>
-                <div className="text-gray-600 mb-1"><b>Teóricas:</b> {estudiante.teoricas.join(", ")}</div>
-                <div className="text-gray-600"><b>Otros:</b> {estudiante.otros.join(", ")}</div>
+                <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante?.instrumento}</div>
+                <div className="text-gray-600 mb-1"><b>Teóricas:</b> Materias teoricas</div>
+                <div className="text-gray-600"><b>Otros:</b> Otras materias</div>
               </div>
               <div className="flex-1">
-                <div className="text-gray-600 mb-1"><b>Estatus Administrativo:</b> {estudiante.estatusAdministrativo}</div>
-                <div className="text-gray-600"><b>Estatus Académico:</b> {estudiante.estatusAcademico}</div>
+                <div className="text-gray-600 mb-1"><b>Estatus Administrativo:</b> estatus</div>
+                <div className="text-gray-600"><b>Estatus Académico:</b> activo</div>
               </div>
             </div>
           </div>

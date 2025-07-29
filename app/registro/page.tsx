@@ -13,7 +13,7 @@ export default function index() {
   const [nombreEstudiante, setnombreEstudiante] = useState<string | null>(null);
   const [fechaNacimiento, setfechaNacimiento] = useState<string | null>(null);
   const [edad, setedad] = useState<string | null>(null);
-  const [genero, setgenero] = useState<string | null>(null);
+  const [genero, setgenero] = useState<string | null>(null); 
   const [cedula, setcedula] = useState<string | null>(null);
   const [telefonoEstudiante, settelefonoEstudiante] = useState<string>("0");
   const [CodigoTelefonoEstudiante, setCodigoTelefonoEstudiante] = useState<string>("0");
@@ -593,7 +593,6 @@ export default function index() {
                 <div className="flex flex-row mt-3 justify-between items-center gap-2">
                   <div className="w-[50%]">
                     <Select
-                      required
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setrepresentanteCodigoTelefono(e.target.value)}
                       className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                     >
@@ -612,7 +611,6 @@ export default function index() {
                       type='text'
                       maxLength={7}
                       minLength={7}
-                      required
                       placeholder="1234567"
                       className='w-full focus:border-blue-600'
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteTelefono(e.target.value)}
@@ -624,7 +622,6 @@ export default function index() {
                 <label className='font-medium'>Ocupacion</label>
                 <Input
                   type='text'
-                  required
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteOcupacion(e.target.value)}
                 />

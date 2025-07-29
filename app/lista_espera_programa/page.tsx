@@ -124,12 +124,12 @@ export default function ListaEspera() {
     try {
       // Aquí iría la lógica para aceptar al estudiante
       // Por ejemplo, crear usuario y actualizar estado
-      const res = await fetch('/api/lista_espera', {
+      const res = await fetch('http://localhost:3200/api/lista_espera', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id_estudiante: idEstudiante,
-          estado: 0 // Cambiar estado a inactivo
+          estado: 0 
         }),
       });
       

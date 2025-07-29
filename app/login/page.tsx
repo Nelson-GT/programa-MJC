@@ -4,30 +4,42 @@ import Button from "@/components/ui/Button"
 import Input from "@/components/ui/Input"
 import Navbar from "@/components/Navbar"
 import { useRouter } from "next/navigation"
-import { FormEvent } from "react"
+import React, { useState, useEffect, FormEvent} from "react"
 
 export default function Login() {
   const router = useRouter()
+  const [userName, setUserName] = useState("")
+  const [password, setPassword] = useState("")
+
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    const usernameInput = document.getElementById("username") as HTMLInputElement | null
-    const passwordInput = document.getElementById("password") as HTMLInputElement | null
+    
 
-    const username = usernameInput?.value || ""
-    const password = passwordInput?.value || ""
 
-    if (username === "estudiante" && password === "estudiante") {
+    if (userName === "estudiante" && password === "estudiante") {
       router.push("/usuario")
-    } else if (username === "profesor" && password === "profesor") {
+    } else if (userName === "profesor" && password === "profesor") {
       router.push("/profesor")
-    } else if (username === "admin" && password === "admin") {
+    } else if (userName === "admin" && password === "admin") {
       router.push("/admin")
     } else {
-      alert("Usuario o contraseña incorrectos")
+      console.log({userName, password});
     }
   }
+  
+  const login = async (email: string, password: string) => {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message);
+    console.log('Login exitoso, ID del usuario:', result.userId);
+    router.push(`/usuario/${result.userId}`);
+  };
 
   return (
     <>
@@ -52,6 +64,7 @@ export default function Login() {
                 placeholder="Usuario / Correo electrónico"
                 className="w-full mt-3 focus:border-blue-600"
                 id="username"
+                onChange={(e) => setUserName(e.target.value)}
               />
             </div>
             <div>
@@ -62,12 +75,14 @@ export default function Login() {
                 placeholder="Contraseña"
                 className="w-full mt-3 focus:border-blue-600"
                 id="password"
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <Button
               type="submit"
               className="w-full text-white ring-offset-2 ring-blue-600 focus:ring shadow rounded-lg"
               style={{backgroundColor: "rgba(112, 3, 3, 1)"}}
+              onClick={() => {login(userName || "", password || "")}}
             >
               Ingresar
             </Button>

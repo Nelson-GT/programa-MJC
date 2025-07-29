@@ -12,36 +12,39 @@ export default function Login() {
 
   interface Estudiante {
     id: number;
-    id_usuario: number | null;
-    id_materias: number | null;
     nombre: string;
-    fecha_nacimiento: string;
     sexo: string;
     ci: string;
+    fecha_nacimiento: string;
+    email: string;
+    direccion_residencial: string;
+    fehca_ingreso: string;
+    instrumentos: string;
+    codigo_instrumento: string;
+    reperesentante_nombre: string;
+    reperesentante_ocupacion: string;
+    reperesentante_parentesco: string;
+    reperesentante_ci: string;
     telefono: string;
+    reperesentante_telefono: string;
+    emergencia_nombre: string;
+    emergencia_telefono: string;
+
+/*
     institucion_educacional: string;
     ocupacion: string;
     profesion: string;
     lugar_trabajo: string;
-    direccion_residencial: string;
-    email: string;
     alergico: string;
     antecedentes: string;
     antecedentes_especificados: string;
-    emergencia_nombre: string;
-    emergencia_telefono: string;
-    reperesentante_nombre: string;
-    reperesentante_ci: string;
-    reperesentante_parentesco: string;
-    reperesentante_telefono: string;
-    reperesentante_ocupacion: string;
     reperesentante_profesion: string;
     reperesentante_lugar_trabajo: string;
     reperesentante_direccion: string;
     reperesentante_email: string;
-    instrumentos: string;
     teorica: string;
     otros: string;
+    */
   }
 
   const [lista, setLista] = useState<ListaEsperaItem[]>([]);
@@ -131,15 +134,19 @@ export default function Login() {
           sexo: estudiante.sexo || "",
           cedula: estudiante.ci || "",
           telefono: estudiante.telefono || "",
+          /*
           institucion: estudiante.institucion_educacional || "",
           ocupacion: estudiante.ocupacion || "",
           profesion: estudiante.profesion || "",
           lugarTrabajo: estudiante.lugar_trabajo || "",
+          */
           direccion: estudiante.direccion_residencial || "",
           email: estudiante.email || "",
+          /*
           alergias: estudiante.alergico || "",
           antecedentes: estudiante.antecedentes || "",
           alergiasEspecificadas:estudiante.antecedentes_especificados || "",
+          */
           contactoEmergencia:estudiante.emergencia_nombre || "",
           numeroEmergencia:estudiante.emergencia_telefono || "",
 
@@ -148,14 +155,18 @@ export default function Login() {
           parentesco: estudiante.reperesentante_parentesco || "",
           representanteTelefono: estudiante.reperesentante_telefono || "",
           representanteOcupacion: estudiante.reperesentante_ocupacion || "",
+          /*
           representanteProfesion: estudiante.reperesentante_profesion || "",
           representanteLugarTrabajo: estudiante.reperesentante_lugar_trabajo || "",
           representanteDireccion: estudiante.reperesentante_direccion || "",
           representanteEmail: estudiante.reperesentante_email || "",
+          */
 
           instrumentosData: estudiante.instrumentos || "",
+          /*
           teoricasData: estudiante.teorica || "",
           otrosData: estudiante.otros || "",
+          */
           autorizacion: "Si",
           firmaCedula: "Prueba de firma y cédula",
         }),
@@ -191,10 +202,8 @@ export default function Login() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: estudiante.email,
-          contraseña: estudiante.ci || "123456789",
-          rol: "estudiante",
-          id_datos: estudiante.id || "",
+          id_estudiante: estudiante.id,
+          password: estudiante.ci || "123456789",
         }),
       })
       const resultado = await res.json();
@@ -203,21 +212,6 @@ export default function Login() {
         return;
       }
       const id_usuario = resultado.id;
-
-      // actualiza el campo id_usuario en la tabla estudiante
-      const resEstudiante = await fetch('/api/estudiante', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: estudiante.id,
-          id_usuario: id_usuario
-        }),
-      });
-      const resultadoEstudiante = await resEstudiante.json();
-      if (!resEstudiante.ok) {
-        console.log(`Ha ocurrido un error: ${resultadoEstudiante.message}`);
-        return;
-      }
 
       // actualiza la lista de espera
       const resLista = await fetch('/api/lista_espera', {
@@ -359,7 +353,10 @@ export default function Login() {
             <div className="flex justify-between mt-4">
               <Button
                 className="w-[48%] bg-gray-200 hover:bg-gray-300 rounded"
-                onClick={() => setShowModalConfir(false)}
+                onClick={() => {
+                  setShowModalConfir(false);
+                  crearUsuario(aux)
+                }}
               >
                 Volver
               </Button>

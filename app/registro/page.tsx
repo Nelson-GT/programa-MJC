@@ -13,7 +13,7 @@ export default function index() {
   const [nombreEstudiante, setnombreEstudiante] = useState<string | null>(null);
   const [fechaNacimiento, setfechaNacimiento] = useState<string | null>(null);
   const [edad, setedad] = useState<string | null>(null);
-  const [genero, setgenero] = useState<string | null>(null);
+  const [genero, setgenero] = useState<string | null>(null); 
   const [cedula, setcedula] = useState<string | null>(null);
   const [telefonoEstudiante, settelefonoEstudiante] = useState<string>("0");
   const [CodigoTelefonoEstudiante, setCodigoTelefonoEstudiante] = useState<string>("0");
@@ -156,45 +156,48 @@ export default function index() {
 
   const handleRegistrar = async (): Promise<void> => {
     try {
-      const res = await fetch("/api/estudiante", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nombre: nombreEstudiante || "",
-          fecha_nacimiento: fechaNacimiento || "",
-          genero: genero || "",
-          ci: cedula || "",
-          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
-          institucion_educacional: institucion || "",
-          ocupacion: ocupacion || "",
-          profesion: profesion || "",
-          lugar_trabajo: lugarTrabajo || "",
-          direccion_residencial: direccion || "",
-          email: email || "",
-          alergias: alergias || "",
-          antecedentes: antecedentes || "",
-          antecedentes_especificados:alergiasEspecificadas || "",
-          emergencia_nombre:contactoEmergencia || "",
-          numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
+        const res = await fetch("/api/estudiante", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            nombre: nombreEstudiante || "",
+            genero: genero || "",
+            ci: cedula || "",
+            fecha_nacimiento: fechaNacimiento || "",
+            email: email || "",
+            direccion_residencial: direccion || "",
+            fecha_ingreso: new Date().toISOString(),
+            instrumentos: instrumentosData || "instrumentos",
+            reperesentante_nombre: representanteNombre || "",
+            reperesentante_ocupacion: representanteOcupacion || "",
+            reperesentante_parentesco: parentesco || "",
+            reperesentante_ci: representanteCI || "",
+            telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
+            representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || "",
+            emergencia_nombre:contactoEmergencia || "",
+            numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
+            /*
+            institucion_educacional: institucion || "",
+            ocupacion: ocupacion || "",
+            profesion: profesion || "",
+            lugar_trabajo: lugarTrabajo || "",
+            alergias: alergias || "", 
+            antecedentes: antecedentes || "",
+            antecedentes_especificados:alergiasEspecificadas || "",
 
-          reperesentante_nombre: representanteNombre || "",
-          reperesentante_ci: representanteCI || "",
-          reperesentante_parentesco: parentesco || "",
-          representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || "",
-          reperesentante_ocupacion: representanteOcupacion || "",
-          reperesentante_profesion: representanteProfesion || "",
-          reperesentante_lugar_trabajo:representanteLugarTrabajo || "",
-          reperesentante_direccion: representanteDireccion || "",
-          reperesentante_email: representanteEmail || "",
+            reperesentante_profesion: representanteProfesion || "",
+            reperesentante_lugar_trabajo:representanteLugarTrabajo || "",
+            reperesentante_direccion: representanteDireccion || "",
+            reperesentante_email: representanteEmail || "",
 
-          instrumentos: instrumentosData || "",
-          teoricas: teoricasData || "",
-          otros: otrosData || "",
-          autorizacion:autorizacion || "",
-        }),
-      })
+            teoricas: teoricasData || "teoricas",
+            otros: otrosData || "otros",
+            autorizacion:autorizacion || "",
+            */
+          }),
+        })
 
       const resultado = await res.json();
       if (!res.ok) {
@@ -622,7 +625,6 @@ export default function index() {
                 <div className="flex flex-row mt-3 justify-between items-center gap-2">
                   <div className="w-[50%]">
                     <Select
-                      required
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setrepresentanteCodigoTelefono(e.target.value)}
                       className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                     >
@@ -641,7 +643,6 @@ export default function index() {
                       type='text'
                       maxLength={7}
                       minLength={7}
-                      required
                       placeholder="1234567"
                       className='w-full focus:border-blue-600'
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteTelefono(e.target.value)}
@@ -653,7 +654,6 @@ export default function index() {
                 <label className='font-medium'>Ocupacion</label>
                 <Input
                   type='text'
-                  required
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteOcupacion(e.target.value)}
                 />

@@ -24,7 +24,7 @@ export default function index() {
   const [lugarTrabajo, setlugarTrabajo] = useState<string | null>(null);
   const [direccion, setdireccion] = useState<string | null>(null);
   const [email, setemail] = useState<string | null>(null);
-  const [alergias, setalergias] = useState<string | null>(null);
+  const [alergias, setalergias] = useState<string | null>("Nada");
   const [antecedentes, setantecedentes] = useState<string | null>(null);
   const [alergiasEspecificadas, setalergiasEspecificadas] = useState<string | null>(null);
   const [contactoEmergencia, setcontactoEmergencia] = useState<string | null>(null);
@@ -43,43 +43,86 @@ export default function index() {
   const [representanteEmail, setrepresentanteEmail] = useState<string | null>(null);
   const [autorizacion, setautorizacion] = useState<string | null>(null);
 
-  // Para los campos de los instrumentos
-  const [instrumentosData, setInstrumentosData] = useState<string | null>(null)
-  const [teoricasData, setTeoricasData] = useState<string | null>(null)
-  const [otrosData, setOtrosData] = useState<string | null>(null)
-  const [instrumentos, setInstrumentos] = useState([{ id: 1, value: "" }])
-  const [teoricas, setTeoricas] = useState([{ id: 1, value: "" }])
-  const [otros, setOtros] = useState([{ id: 1, value: "" }])
+  interface Campo {
+    id: string,
+    valor: string,
+  }
+  const [instrumentos, setInstrumentos] = useState<Campo[]>([{ id: crypto.randomUUID(), valor: "" }]);
+  const [teoricas, setTeoricas] = useState<Campo[]>([{ id: crypto.randomUUID(), valor: "" }]);
+  const [otros, setOtros] = useState<Campo[]>([{ id: crypto.randomUUID(), valor: "" }]);
+
+  const añadirInstrumento = () => {
+    const newField: Campo = { id: crypto.randomUUID(), valor: "" };
+    if (instrumentos.length > 2) {
+      if (confirm("¿Deseas Añadir otro Instrumento? cantidad de Instrumentos: " + (instrumentos.length))) {
+        setInstrumentos([...instrumentos, newField]);
+      }
+    } else {
+      setInstrumentos([...instrumentos, newField]);
+    }
+  };
+
+  const añadirTeoricas = () => {
+    const newField: Campo = { id: crypto.randomUUID(), valor: "" };
+    if (teoricas.length > 2) {
+      if (confirm("¿Deseas Añadir otro Instrumento? cantidad de Instrumentos: " + (teoricas.length))) {
+        setTeoricas([...teoricas, newField]);
+      }
+    } else {
+      setTeoricas([...teoricas, newField]);
+    }
+  };
+
+  const añadirOtros = () => {
+    const newField: Campo = { id: crypto.randomUUID(), valor: "" };
+    if (otros.length > 2) {
+      if (confirm("¿Deseas Añadir otro Instrumento? cantidad de Instrumentos: " + (otros.length))) {
+        setOtros([...otros, newField]);
+      }
+    } else {
+      setOtros([...otros, newField]);
+    }
+  };
+
+  const handleChangeInstrumento = (id: string, newValue: string) => {
+    console.log(newValue)
+    setInstrumentos(prev =>
+      prev.map(field =>
+        field.id === id ? { ...field, valor: newValue } : field
+      )
+    );
+    console.log(instrumentos)
+  };
+
+  const handleChangeTeoricas = (id: string, newValue: string) => {
+    setTeoricas(prev =>
+      prev.map(field =>
+        field.id === id ? { ...field, valor: newValue } : field
+      )
+    );
+  };
+
+  const handleChangeOtros = (id: string, newValue: string) => {
+    setOtros(prev =>
+      prev.map(field =>
+        field.id === id ? { ...field, valor: newValue } : field
+      )
+    );
+  };
+
+  const eliminarInstrumento = (id: string) => {
+    setInstrumentos(prev => prev.filter(field => field.id !== id));
+  };
+
+  const eliminarTeorica = (id: string) => {
+    setTeoricas(prev => prev.filter(field => field.id !== id));
+  };
+
+  const eliminarOtros = (id: string) => {
+    setOtros(prev => prev.filter(field => field.id !== id));
+  };
 
   const [esMenor, setEsMenor] = useState<boolean>(true);
-
-  const handleInstrumentoChange = (id: number, newValue: string) => {
-    const actualizados = instrumentos.map(item =>
-      item.id === id ? { ...item, value: newValue } : item
-    )
-    setInstrumentos(actualizados)
-    const valores = actualizados.map(item => item.value).filter(v => v.trim() !== "")
-    setInstrumentosData(valores.join(";"))
-  }
-
-  const handleTeoricaChange = (id: number, newValue: string) => {
-    const actualizados = teoricas.map(item =>
-      item.id === id ? { ...item, value: newValue } : item
-    )
-    setTeoricas(actualizados)
-    const valores = actualizados.map(item => item.value).filter(v => v.trim() !== "")
-    setTeoricasData(valores.join(";"))
-  }
-  
-
-  const handleOtroChange = (id: number, newValue: string) => {
-    const actualizados = otros.map(item =>
-      item.id === id ? { ...item, value: newValue } : item
-    )
-    setOtros(actualizados)
-    const valores = actualizados.map(item => item.value).filter(v => v.trim() !== "")
-    setOtrosData(valores.join(";"))
-  }
 
   const [photo64, setphoto64] = useState<String | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -97,9 +140,23 @@ export default function index() {
     }
   }
 
-
   const handleGenerarPDF = async (): Promise<void> => {
     try {
+      const instrumentosData = instrumentos.map(item => item.valor).join(", ");
+      const teoricasData = teoricas.map(item => item.valor).join(", ");
+      const otrosData = otros.map(item => item.valor).join(", ");
+      var telefono = " "
+      var telefonoRepresentante = " "
+      var telefonoEmergencia = " "
+      if (telefonoEstudiante) {
+        var telefono = CodigoTelefonoEstudiante + telefonoEstudiante;
+      }
+      if (representanteTelefono) {
+        var telefonoRepresentante = representanteCodigoTelefono + representanteTelefono;
+      }
+      if (numeroEmergencia) {
+        var telefono = codigonumeroEmergencia + telefonoEmergencia;
+      }
       const res = await fetch("/api/pdf_registro", {
         method: "POST",
         headers: {
@@ -113,7 +170,7 @@ export default function index() {
           sexo: genero || " ",
           cedula: cedula || " ",
           rif: rif || " ",
-          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || " ",
+          telefono: telefono || " ",
           institucion: institucion || " ",
           ocupacion: ocupacion || " ",
           profesion: profesion || " ",
@@ -124,13 +181,13 @@ export default function index() {
           antecedentes: antecedentes || " ",
           alergiasEspecificadas:alergiasEspecificadas || " ",
           contactoEmergencia:contactoEmergencia || " ",
-          numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || " ",
+          numeroEmergencia: telefonoEmergencia,
 
           representanteNombre: representanteNombre || " ",
           representanteCI: representanteCI || " ",
           representanteRif: representanteRIF || " ",
           parentesco: parentesco || " ",
-          representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || " ",
+          representanteTelefono: telefonoRepresentante,
           representanteOcupacion: representanteOcupacion || " ",
           representanteProfesion: representanteProfesion || " ",
           representanteLugarTrabajo:representanteLugarTrabajo || " ",
@@ -165,6 +222,9 @@ export default function index() {
 
   const handleRegistrar = async (): Promise<void> => {
     try {
+      const instrumentosData = instrumentos.map(item => item.valor).join(", ");
+      const teoricasData = teoricas.map(item => item.valor).join(", ");
+      const otrosData = otros.map(item => item.valor).join(", ");
       const res = await fetch("http://localhost:3200/api/estudiante/create", {
         method: "POST",
         headers: {
@@ -715,28 +775,6 @@ export default function index() {
 
             {/* Instrumentos dinámicos */}
             {(() => {
-              // React state hooks para los campos dinámicos
-              const [instrumentos, setInstrumentos] = React.useState([{ id: 1 }]);
-              const [teoricas, setTeoricas] = React.useState([{ id: 1 }]);
-              const [otros, setOtros] = React.useState([{ id: 1 }]);
-
-              // Funciones para añadir y eliminar campos
-              const handleAdd = (
-                setType: React.Dispatch<React.SetStateAction<{ id: number }[]>>,
-                arr: { id: number }[]
-              ) => {
-                if (arr.length >= 3) {
-                  if (!window.confirm(`Ya tienes ${arr.length} campos. ¿Estás seguro de añadir uno más?`)) return;
-                }
-                setType([...arr, { id: Date.now() + Math.random() }]);
-              };
-              const handleRemove = (
-                type: { id: number }[],
-                setType: React.Dispatch<React.SetStateAction<{ id: number }[]>>,
-                id: number
-              ) => {
-                setType(type.filter((item: { id: number }) => item.id !== id));
-              };
 
               // Renderizado de campos dinámicos
               return (
@@ -750,7 +788,7 @@ export default function index() {
                           <Select
                             className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                             name={`instrumento-${item.id}`}
-                            onChange={(e) => handleInstrumentoChange(item.id, e.target.value)}
+                            onChange={(e) => handleChangeInstrumento(item.id, e.target.value)}
                           >
                             <option value=''>Seleccione una opción</option>
                             <option value='Violín'>Violín</option>
@@ -764,7 +802,7 @@ export default function index() {
                             type="button"
                             className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded flex items-center"
                             title="Añadir otro instrumento"
-                            onClick={() => handleAdd(setInstrumentos, instrumentos)}
+                            onClick={() => añadirInstrumento()}
                           >
                             <span className="text-lg font-bold">+</span>
                           </button>
@@ -773,7 +811,7 @@ export default function index() {
                               type="button"
                               className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded flex items-center"
                               title="Eliminar"
-                              onClick={() => handleRemove(instrumentos, setInstrumentos, item.id)}
+                              onClick={() => eliminarInstrumento(item.id)}
                             >
                               <span className="text-lg font-bold">−</span>
                             </button>
@@ -793,13 +831,13 @@ export default function index() {
                             type='text'
                             className='w-full focus:border-blue-600'
                             name={`teorica-${item.id}`}
-                            onChange={(e) => handleTeoricaChange(item.id, e.target.value)}
+                            onChange={(e) => {handleChangeTeoricas(item.id, e.target.value);console.log("Cambio")}}
                           />
                           <button
                             type="button"
                             className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded flex items-center"
                             title="Añadir otra teórica"
-                            onClick={() => handleAdd(setTeoricas, teoricas)}
+                            onClick={() => añadirTeoricas()}
                           >
                             <span className="text-lg font-bold">+</span>
                           </button>
@@ -808,7 +846,7 @@ export default function index() {
                               type="button"
                               className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded flex items-center"
                               title="Eliminar"
-                              onClick={() => handleRemove(teoricas, setTeoricas, item.id)}
+                              onClick={() => eliminarTeorica(item.id)}
                             >
                               <span className="text-lg font-bold">−</span>
                             </button>
@@ -828,13 +866,13 @@ export default function index() {
                             type='text'
                             className='w-full focus:border-blue-600'
                             name={`otro-${item.id}`}
-                            onChange={(e) => handleOtroChange(item.id, e.target.value)}
+                            onChange={(e) => handleChangeOtros(item.id, e.target.value)}
                           />
                           <button
                             type="button"
                             className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded flex items-center"
                             title="Añadir otro"
-                            onClick={() => handleAdd(setOtros, otros)}
+                            onClick={() => añadirOtros()}
                           >
                             <span className="text-lg font-bold">+</span>
                           </button>
@@ -843,7 +881,7 @@ export default function index() {
                               type="button"
                               className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded flex items-center"
                               title="Eliminar"
-                              onClick={() => handleRemove(otros, setOtros, item.id)}
+                              onClick={() => eliminarOtros(item.id)}
                             >
                               <span className="text-lg font-bold">−</span>
                             </button>
@@ -866,7 +904,7 @@ export default function index() {
                   <input
                     type='radio'
                     name='autorizacion'
-                    value='si'
+                    value='Si'
                     required
                     className='form-radio text-blue-600'
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setautorizacion(e.target.value)}
@@ -877,7 +915,7 @@ export default function index() {
                   <input
                     type='radio'
                     name='autorizacion'
-                    value='no'
+                    value='No'
                     required
                     className='form-radio text-blue-600'
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setautorizacion(e.target.value)}

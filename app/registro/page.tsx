@@ -408,7 +408,6 @@ export default function index() {
                 <label className='font-medium'>R.I.F.</label>
                 <Input
                   type='text'
-                  required
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRif(e.target.value)}
                 />

@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <>
+    <div className="fondo">
       <Head>
         <meta name='robots' content='index' />
       </Head>
@@ -20,6 +20,6 @@ export default function Home() {
       <Reseña /> {/* reseña histórica */} 
       <Programas /> {/* Forma parte de nuestros programas */}
       <Footer />
-    </>
+    </div>
   );
 }

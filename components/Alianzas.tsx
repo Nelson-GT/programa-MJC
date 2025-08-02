@@ -4,7 +4,7 @@ import SectionWrapper from '@/components/SectionWrapper'
 import hesperia from '@/public/logos/hesperia.png'
 import ujap from '@/public/logos/ujap.png'
 import clx from '@/public/logos/clx.png'
-import redvital from '@/public/logos/redvital.jpg'
+import redvital from '@/public/logos/redvital.png'
 
 const logos = [
     {

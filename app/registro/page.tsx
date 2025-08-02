@@ -15,6 +15,7 @@ export default function index() {
   const [edad, setedad] = useState<string | null>(null);
   const [genero, setgenero] = useState<string | null>(null); 
   const [cedula, setcedula] = useState<string | null>(null);
+  const [rif, setRif] = useState<string | null>(null);
   const [telefonoEstudiante, settelefonoEstudiante] = useState<string>("0");
   const [CodigoTelefonoEstudiante, setCodigoTelefonoEstudiante] = useState<string>("0");
   const [institucion, setinstitucion] = useState<string | null>(null);
@@ -31,6 +32,7 @@ export default function index() {
   const [numeroEmergencia, setnumeroEmergencia] = useState<string>("0");
   const [representanteNombre, setrepresentanteNombre] = useState<string | null>(null);
   const [representanteCI, setrepresentanteCI] = useState<string | null>(null);
+  const [representanteRIF, setrepresentanteRIF] = useState<string | null>(null);
   const [parentesco, setparentesco] = useState<string | null>(null);
   const [representanteCodigoTelefono, setrepresentanteCodigoTelefono] = useState<string>("0");
   const [representanteTelefono, setrepresentanteTelefono] = useState<string | null>(null);
@@ -48,6 +50,8 @@ export default function index() {
   const [instrumentos, setInstrumentos] = useState([{ id: 1, value: "" }])
   const [teoricas, setTeoricas] = useState([{ id: 1, value: "" }])
   const [otros, setOtros] = useState([{ id: 1, value: "" }])
+
+  const [esMenor, setEsMenor] = useState<boolean>(true);
 
   const handleInstrumentoChange = (id: number, newValue: string) => {
     const actualizados = instrumentos.map(item =>
@@ -77,16 +81,19 @@ export default function index() {
     setOtrosData(valores.join(";"))
   }
 
-  // Para la foto
-  const [photo, setPhoto] = useState<File | null>(null)
+  const [photo64, setphoto64] = useState<String | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
     if (file) {
-      setPhoto(file);
       const objectUrl = URL.createObjectURL(file);
       setPreviewUrl(objectUrl);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setphoto64(reader.result as string); // Aquí tienes la cadena Base64
+      };
+      reader.readAsDataURL(file); // Convierte a Base64
     }
   }
 
@@ -99,39 +106,41 @@ export default function index() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          nombreEstudiante: nombreEstudiante || "",
-          fechaNacimiento: fechaNacimiento || "",
-          edad: edad || "",
-          genero: genero || "",
-          cedula: cedula || "",
-          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
-          institucion: institucion || "",
-          ocupacion: ocupacion || "",
-          profesion: profesion || "",
-          lugarTrabajo: lugarTrabajo || "",
-          direccion: direccion || "",
-          email: email || "",
-          alergias: alergias || "",
-          antecedentes: antecedentes || "",
-          alergiasEspecificadas:alergiasEspecificadas || "",
-          contactoEmergencia:contactoEmergencia || "",
-          numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
+          photoUrl: photo64 || "",
+          nombreEstudiante: nombreEstudiante || " ",
+          fechaNacimiento: fechaNacimiento || " ",
+          edad: edad || " ",
+          sexo: genero || " ",
+          cedula: cedula || " ",
+          rif: rif || " ",
+          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || " ",
+          institucion: institucion || " ",
+          ocupacion: ocupacion || " ",
+          profesion: profesion || " ",
+          lugarTrabajo: lugarTrabajo || " ",
+          email: email || " ",
+          direccion: direccion || " ",
+          alergias: alergias || " ",
+          antecedentes: antecedentes || " ",
+          alergiasEspecificadas:alergiasEspecificadas || " ",
+          contactoEmergencia:contactoEmergencia || " ",
+          numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || " ",
 
-          representanteNombre: representanteNombre || "",
-          representanteCI: representanteCI || "",
-          parentesco: parentesco || "",
-          representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || "",
-          representanteOcupacion: representanteOcupacion || "",
-          representanteProfesion: representanteProfesion || "",
-          representanteLugarTrabajo:representanteLugarTrabajo || "",
-          representanteDireccion: representanteDireccion || "",
-          representanteEmail: representanteEmail || "",
+          representanteNombre: representanteNombre || " ",
+          representanteCI: representanteCI || " ",
+          representanteRif: representanteRIF || " ",
+          parentesco: parentesco || " ",
+          representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || " ",
+          representanteOcupacion: representanteOcupacion || " ",
+          representanteProfesion: representanteProfesion || " ",
+          representanteLugarTrabajo:representanteLugarTrabajo || " ",
+          representanteDireccion: representanteDireccion || " ",
+          representanteEmail: representanteEmail || " ",
 
-          instrumentosData: instrumentosData || "",
-          teoricasData: teoricasData || "",
-          otrosData: otrosData || "",
-          autorizacion:autorizacion || "",
-          firmaCedula: "Prueba de firma y cédula",
+          instrumentosData: instrumentosData || " ",
+          teoricasData: teoricasData || " ",
+          otrosData: otrosData || " ",
+          autorizacion:autorizacion || " ",
         }),
       })
 
@@ -162,13 +171,13 @@ export default function index() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-         nombre: nombreEstudiante || "",
-         genero: genero || "",
-         cedula: cedula || "",
-         fecha_nacimiento: fechaNacimiento || "",
-         email: email || "",
-         direccion_residencial: direccion || "",
-         telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
+          nombre: nombreEstudiante || "",
+          genero: genero || "",
+          cedula: cedula || "",
+          fecha_nacimiento: fechaNacimiento || "",
+          email: email || "",
+          direccion_residencial: direccion || "",
+          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
           emergencia_nombre:contactoEmergencia || "",
           numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
           reperesentante_nombre: representanteNombre || "",
@@ -223,7 +232,7 @@ export default function index() {
   };
 
   return (
-    <>
+    <div className="fondo">
       <Head>
         <meta name='robots' content='index' />
         <title>Planilla</title>
@@ -263,7 +272,7 @@ export default function index() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={handlePhotoChange} // Puedes implementar la lógica para mostrar la foto
+                    onChange={handlePhotoChange}
                   />
                   <span className="cursor-pointer text-blue-600 hover:underline">Subir foto</span>
                 </label>
@@ -313,10 +322,13 @@ export default function index() {
                       }
                       if (edadInput) {
                         edadInput.value = edad >= 0 ? String(edad) : '';
+                        setedad(String(edad));
+                        if (edad < 18) {setEsMenor(true)} else {setEsMenor(false)};
                       }
                     } else {
                       if (edadInput) {
                         edadInput.value = '';
+                        setedad(null);
                       }
                     }
                   }}
@@ -362,16 +374,15 @@ export default function index() {
 
             {/* Teléfono Celular */}
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
-              <div className='w-full'>
-                <label className='font-medium'>Teléfono Celular *</label>
-                <div className="flex flex-row mt-3 justify-between items-center">
-                  <div className="w-[50%] items-start mr-4">
+              <div className='w-[50%]'>
+                <label className='font-medium'>Teléfono Celular</label>
+                <div className="flex flex-row mt-3 justify-between items-center gap-2">
+                  <div className="w-[50%]">
                     <Select
-                      required
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCodigoTelefonoEstudiante(e.target.value)}
-                      className='border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
+                      className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                     >
-                      <option value="">Seleccione</option>
+                      <option value="">seleccione</option>
                       <option value='0412'>0412</option>
                       <option value='0422'>0422</option>
                       <option value='0414'>0414</option>
@@ -380,18 +391,27 @@ export default function index() {
                       <option value='0426'>0426</option>
                     </Select>
                   </div>
-                  <div className="w-[50%] items-end">
+
+                  <div className="w-[50%]">
                     <Input
                       type='text'
                       maxLength={7}
                       minLength={7}
-                      required
                       placeholder="1234567"
-                      className='w-[60%] focus:border-blue-600'
+                      className='w-full focus:border-blue-600'
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => settelefonoEstudiante(e.target.value)}
                     />
                   </div>
                 </div>
+              </div>
+              <div className='w-[50%]'>
+                <label className='font-medium'>R.I.F.</label>
+                <Input
+                  type='text'
+                  required
+                  className='w-full mt-3 focus:border-blue-600'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRif(e.target.value)}
+                />
               </div>
             </div>
 
@@ -558,43 +578,47 @@ export default function index() {
             </div>
             <br></br>
             {/* --------------------Representante Legal-------------------- */}
-            <h3 className='text-gray-800 text-3xl font-bold sm:text-xl'>Datos del Representante Legal</h3>
+            <h3 className='text-gray-800 text-3xl font-bold sm:text-xl'>Datos del Representante Legal {esMenor ? "*" : ""}</h3>
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Nombres y Apellidos</label>
+                <label className='font-medium'>Nombres y Apellidos {esMenor ? "*" : ""}</label>
                 <Input
                   type='text'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteNombre(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
+                  required =  {esMenor ? true : false}
                 />
               </div>
             </div>
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>C.I.:</label>
+                <label className='font-medium'>C.I. {esMenor ? "*" : ""}</label>
                 <Input
                   type='text'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteCI(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
+                  required =  {esMenor ? true : false}
                 />
               </div>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Parentesco</label>
+                <label className='font-medium'>Parentesco {esMenor ? "*" : ""}</label>
                 <Input
                   type='text'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setparentesco(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
+                  required = {esMenor ? true : false}
                 />
               </div>
             </div>
             <div className='flex flex-col sm:flex-row gap-3 w-full items-start'>
               <div className='w-[50%]'>
-                <label className='font-medium'>Teléfono Celular</label>
+                <label className='font-medium'>Teléfono Celular {esMenor ? "*" : ""}</label>
                 <div className="flex flex-row mt-3 justify-between items-center gap-2">
                   <div className="w-[50%]">
                     <Select
                       onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setrepresentanteCodigoTelefono(e.target.value)}
                       className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
+                      required =  {esMenor ? true : false}
                     >
                       <option value="">seleccione</option>
                       <option value='0412'>0412</option>
@@ -613,17 +637,19 @@ export default function index() {
                       minLength={7}
                       placeholder="1234567"
                       className='w-full focus:border-blue-600'
+                      required =  {esMenor ? true : false}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteTelefono(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
               <div className='w-[50%]'>
-                <label className='font-medium'>Ocupacion</label>
+                <label className='font-medium'>Ocupacion {esMenor ? "*" : ""}</label>
                 <Input
                   type='text'
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteOcupacion(e.target.value)}
+                  required =  {esMenor ? true : false}
                 />
               </div>
 
@@ -631,39 +657,54 @@ export default function index() {
 
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Profesión</label>
+                <label className='font-medium'>Profesión {esMenor ? "*" : ""}</label>
                 <Input
                   type='text'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteProfesion(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
+                  required =  {esMenor ? true : false}
                 />
               </div>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Lugar de Trabajo</label>
+                <label className='font-medium'>Lugar de Trabajo {esMenor ? "*" : ""}</label>
                 <Input
                   type='text'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteLugarTrabajo(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
+                  required =  {esMenor ? true : false}
                 />
               </div>
             </div>
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>Dirección Residencial</label>
+                <label className='font-medium'>Dirección Residencial {esMenor ? "*" : ""}</label>
                 <Input
                   type='text'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteDireccion(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
+                  required =  {esMenor ? true : false}
                 />
               </div>
             </div>
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
               <div className='flex-1 w-full'>
-                <label className='font-medium'>E-mail</label>
+                <label className='font-medium'>R.I.F. {esMenor ? "*" : ""}</label>
+                <Input
+                  type='text'
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteRIF(e.target.value)}
+                  className='w-full mt-3 focus:border-blue-600'
+                  required =  {esMenor ? true : false}
+                />
+              </div>
+            </div>
+            <div className='flex flex-col sm:flex-row gap-4 w-full'>
+              <div className='flex-1 w-full'>
+                <label className='font-medium'>E-mail {esMenor ? "*" : ""}</label>
                 <Input
                   type='email'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteEmail(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
+                  required =  {esMenor ? true : false}
                 />
               </div>
             </div>
@@ -881,6 +922,6 @@ export default function index() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

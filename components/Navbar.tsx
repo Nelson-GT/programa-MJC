@@ -29,7 +29,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <header className="bg-[#721422]  relative p-0 mb-12">
+        <header className="bg-[#721422] p-0 mb-12">
             <div className="custom-screen md:hidden">
                 <NavHeader
                 menuBtnEl={menuBtnEl}

@@ -7,6 +7,7 @@ import Titulo from "@/components/Titulo";
 import Alianza from "@/components/Alianzas";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Estadistica from "@/components/Estadisticas"
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       </Head>
       <Navbar />
       <Titulo />  {/* sinfonica de carabobo */} 
+      <Estadistica></Estadistica>
       <Alianza /> {/* Alianzas */}
       <Reseña /> {/* reseña histórica */} 
       <Programas /> {/* Forma parte de nuestros programas */}

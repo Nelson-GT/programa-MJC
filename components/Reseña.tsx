@@ -4,7 +4,7 @@ import DarkWrapper from "@/components/DarkWrapper"
 const CenteredCTAText = () => {
     return (
         
-        <SectionWrapper id="reseña-historica">
+        <SectionWrapper id="reseña-historica" >
             <div className="mx-8 md:mx-3 rounded-xl">
                 <DarkWrapper className="rounded-3xl">
                 <div className="custom-screen text-center mx-5">

@@ -13,5 +13,14 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
-
+@layer components {
+  .font-times {
+    font-family: 'Times New Roman', Times, serif;
+  }
+}
+.inter-font {
+  font-family: 'Inter', sans-serif;
+}
+  .font-arial {
+    font-family: Arial, Helvetica, sans-serif;
+  }

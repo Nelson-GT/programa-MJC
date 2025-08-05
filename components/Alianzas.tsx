@@ -26,7 +26,7 @@ const logos = [
 ]
 
 const LogoGrid = () => (
-    <SectionWrapper>
+    <SectionWrapper >
         <div className="custom-screen">
             <h2 className="font-semibold text-3xl text-gray-800 text-center">
                 Nuestras Alianzas

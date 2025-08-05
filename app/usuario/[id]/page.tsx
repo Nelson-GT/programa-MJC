@@ -1,7 +1,7 @@
 "use client"
 import Head from "next/head"
 import Footer from "@/components/Footer"
-import Navbar from "@/components/Navbar"
+import Navbar from "@/components/NavbatUser"
 import { useParams } from "next/navigation"
 import React, { useState, useEffect } from "react"
 
@@ -120,29 +120,31 @@ export default function Estudiante() {
       <div className="w-full flex flex-col items-center px-4 py-8">
 
         {/* Información Personal */}
-        <div className="bg-white rounded-xl p-12 mb-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Información Personal</h2>
-          <div className=" flex flex-col md:flex-row items-center gap-8 w-full max-w-5xl mb-8">
-            <img
-              src={foto}
-              alt={estudiante?.nombre || "Foto del Estudiante"}
-              className="w-36 h-36 rounded-full object-cover border"
-            />
-            <div className="flex-1 flex flex-col md:flex-row gap-8 w-full">
-              <div className="flex-1 mb-4 md:mb-0">
-                <div className="text-gray-600 mb-1"><b>Nombre:</b> {estudiante?.nombre}</div>
-                <div className="text-gray-600 mb-1"><b>Cédula:</b> {estudiante?.cedula}</div>
-                <div className="text-gray-600 mb-1"><b>Teléfono:</b> {estudiante?.telefono_estudiantes}</div>
-                <div className="text-gray-600"><b>Email:</b> {estudiante?.correo_electronico}</div>
-              </div>
-              <div className="flex-1 mb-4 md:mb-0">
-                <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante?.instrumento}</div>
-                <div className="text-gray-600 mb-1"><b>Teóricas:</b> Materias teoricas</div>
-                <div className="text-gray-600"><b>Otros:</b> Otras materias</div>
-              </div>
-              <div className="flex-1">
-                <div className="text-gray-600 mb-1"><b>Estatus Administrativo:</b> estatus</div>
-                <div className="text-gray-600"><b>Estatus Académico:</b> activo</div>
+        <div className="bg-white rounded-xl p-3 mb-8">
+          <div className="p-12 border border-gray-300 rounded-xl shadow-xl">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Información Personal</h2>
+            <div className=" flex flex-col md:flex-row items-center gap-8 w-full max-w-5xl mb-8">
+              <img
+                src={foto}
+                alt={estudiante?.nombre || "Foto del Estudiante"}
+                className="w-36 h-36 rounded-full object-cover border"
+              />
+              <div className="flex-1 flex flex-col md:flex-row gap-8 w-full">
+                <div className="flex-1 mb-4 md:mb-0">
+                  <div className="text-gray-600 mb-1"><b>Nombre:</b> {estudiante?.nombre}</div>
+                  <div className="text-gray-600 mb-1"><b>Cédula:</b> {estudiante?.cedula}</div>
+                  <div className="text-gray-600 mb-1"><b>Teléfono:</b> {estudiante?.telefono_estudiantes}</div>
+                  <div className="text-gray-600"><b>Email:</b> {estudiante?.correo_electronico}</div>
+                </div>
+                <div className="flex-1 mb-4 md:mb-0">
+                  <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante?.instrumento}</div>
+                  <div className="text-gray-600 mb-1"><b>Teóricas:</b> Materias teoricas</div>
+                  <div className="text-gray-600"><b>Otros:</b> Otras materias</div>
+                </div>
+                <div className="flex-1">
+                  <div className="text-gray-600 mb-1"><b>Estatus Administrativo:</b> estatus</div>
+                  <div className="text-gray-600"><b>Estatus Académico:</b> activo</div>
+                </div>
               </div>
             </div>
           </div>

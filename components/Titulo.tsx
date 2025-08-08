@@ -9,7 +9,7 @@ type Slide = {
 };
 
 const Hero = () => {
-     const [currentSlide, setCurrentSlide] = useState<number>(0);
+      const [currentSlide, setCurrentSlide] = useState<number>(0);
   const slides: Slide[] = [
     { id: 1, src: "/imagen1.jpeg", alt: "Imagen 1 del programa" },
     { id: 2, src: "/imagen2.jpeg", alt: "Imagen 2 del programa" },
@@ -106,7 +106,7 @@ const Hero = () => {
                 <div className="flex items-center justify-center gap-x-3 font-medium text-sm">
                     <NavLink
                         href="/registro"
-                        className="flex items-center gap-x-2 text-white"
+                        className="flex items-center gap-x-2 text-white font-semibold"
                         style={{backgroundColor: "rgba(112, 3, 3, 1)"}}
                     >
                         Inscribirse
@@ -116,7 +116,7 @@ const Hero = () => {
                     </NavLink>
                     <NavLink
                         href="#reseña-historica" 
-                        className="flex items-center gap-x-2 text-gray-700 hover:text-gray-900"
+                        className="flex items-center gap-x-2 text-gray-700 hover:text-gray-900 font-semibold"
                         scroll={false}
                     >
                         Sobre nosotros  

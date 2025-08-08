@@ -61,5 +61,5 @@ export default function ContadorConReinicio ({ numeroFinal }){
 
   const contador = useContadorAcelerado(numeroFinal, 2000, estaVisible);
 
-  return <div ref={ref} className='text-5xl font-times'>+{contador}</div>;
+  return <div ref={ref} className='text-5xl'>+{contador}</div>;
 };

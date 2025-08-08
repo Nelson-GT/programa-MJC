@@ -25,18 +25,19 @@ type Nota = {
   nota_final: number;
   estatus: string;
   materia: string;
+  siguiente_nivel: string;
 };
 
 const notas_prueba: Nota[] = [
-  { periodo: "2024-1", nivel_inicial: "A1", nota_final: 18.5, estatus: "Promovido", materia: "Violín" },
-  { periodo: "2024-2", nivel_inicial: "A2", nota_final: 17.2, estatus: "Continua", materia: "Violín" },
-  { periodo: "2024-3", nivel_inicial: "A2", nota_final: 15.8, estatus: "Promovido", materia: "Violín" },
-  { periodo: "2025-1", nivel_inicial: "B1", nota_final: 16.9, estatus: "Promovido", materia: "Violín" },
-  { periodo: "2024-2", nivel_inicial: "Primer año", nota_final: 12.3, estatus: "Promovido", materia: "Solfeo" },
-  { periodo: "2024-3", nivel_inicial: "Segundo año", nota_final: 13.8, estatus: "Promovido", materia: "Solfeo" },
-  { periodo: "2025-1", nivel_inicial: "Tercer año", nota_final: 15.0, estatus: "Promovido", materia: "Solfeo" },
-  { periodo: "2024-3", nivel_inicial: "A1", nota_final: 10.5, estatus: "Continua", materia: "Coro" },
-  { periodo: "2025-1", nivel_inicial: "A1", nota_final: 11.7, estatus: "Continua", materia: "Coro" },
+  { periodo: "2024-1", nivel_inicial: "A1", nota_final: 18.5, estatus: "Promovido", materia: "Violín", siguiente_nivel: "A2" },
+  { periodo: "2024-2", nivel_inicial: "A2", nota_final: 17.2, estatus: "Continua", materia: "Violín", siguiente_nivel: "A2" },
+  { periodo: "2024-3", nivel_inicial: "A2", nota_final: 15.8, estatus: "Promovido", materia: "Violín" , siguiente_nivel: "B1" },
+  { periodo: "2025-1", nivel_inicial: "B1", nota_final: 16.9, estatus: "Promovido", materia: "Violín" , siguiente_nivel: "B2" },
+  { periodo: "2024-2", nivel_inicial: "Primer año", nota_final: 12.3, estatus: "Promovido", materia: "Solfeo" , siguiente_nivel: "Segundo año" },
+  { periodo: "2024-3", nivel_inicial: "Segundo año", nota_final: 13.8, estatus: "Promovido", materia: "Solfeo" , siguiente_nivel: "Tercer año" },
+  { periodo: "2025-1", nivel_inicial: "Tercer año", nota_final: 15.0, estatus: "Promovido", materia: "Solfeo" , siguiente_nivel: "Cuarto año" },
+  { periodo: "2024-3", nivel_inicial: "A1", nota_final: 10.5, estatus: "Continua", materia: "Coro" , siguiente_nivel: "A1" },
+  { periodo: "2025-1", nivel_inicial: "A1", nota_final: 11.7, estatus: "Continua", materia: "Coro" , siguiente_nivel: "A1" },
 ];
 
 function agruparPorMateria(notas: Nota[]): Record<string, Nota[]> {
@@ -153,22 +154,24 @@ export default function Estudiante() {
         {Object.entries(notasPorMateria).map(([materia, registros]) => ( /* Divide por materia*/
           <div key={materia} className="bg-white shadow rounded-lg p-6 w-full max-w-3xl mb-8">
             <h3 className="text-xl font-semibold text-gray-800 mb-4">Historial Académico: {materia}</h3>
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg mb-2">
+            <table className="min-w-full bg-white border border-gray-200 rounded-lg mb-2 shadow-md hover:shadow-xl duration-500">
               <thead>
                 <tr className="bg-gray-100 text-gray-700">
-                  <th className="px-4 py-2 border-b">Periodo</th>
-                  <th className="px-4 py-2 border-b">Nivel</th>
-                  <th className="px-4 py-2 border-b">Nota Final</th>
-                  <th className="px-4 py-2 border-b">Estatus</th>
+                  <th className="px-4 py-2 border-b border-gray-300 ">Periodo</th>
+                  <th className="px-4 py-2 border-b border-gray-300">Nivel Inicial</th>
+                  <th className="px-4 py-2 border-b border-gray-300">Nota Final</th>
+                  <th className="px-4 py-2 border-b border-gray-300">Estatus</th>
+                  <th className="px-4 py-2 border-b border-gray-300">Siguiente Nivel</th>
                 </tr>
               </thead>
               <tbody>
                 {registros.map((nota, i) => (
-                  <tr key={i}>
-                    <td className="px-4 py-2 border-b text-center">{nota.periodo}</td>
-                    <td className="px-4 py-2 border-b text-center">{nota.nivel_inicial}</td>
-                    <td className="px-4 py-2 border-b text-center">{nota.nota_final}</td>
-                    <td className="px-4 py-2 border-b text-center">{nota.estatus}</td>
+                  <tr key={i} className="hover:bg-gray-100">
+                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.periodo}</td>
+                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.nivel_inicial}</td>
+                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.nota_final}</td>
+                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.estatus}</td>
+                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.siguiente_nivel}</td>
                   </tr>
                 ))}
               </tbody>

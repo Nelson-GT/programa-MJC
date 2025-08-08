@@ -225,7 +225,8 @@ export default function index() {
       const instrumentosData = instrumentos.map(item => item.valor).join(", ");
       const teoricasData = teoricas.map(item => item.valor).join(", ");
       const otrosData = otros.map(item => item.valor).join(", ");
-      const res = await fetch("http://localhost:3200/api/estudiante/create", {
+      /* const res = await fetch("http://localhost:3200/api/estudiante/create", { */
+      const res = await fetch("api/estudiante", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -261,26 +262,6 @@ export default function index() {
       console.log('Error al conectar con el servidor');
     }
   }
-
-  const [Completo, setCompleto] = useState<boolean | null>(null)
-  const checkCompleto = () => {
-    if (
-      nombreEstudiante &&
-      fechaNacimiento &&
-      edad &&
-      genero &&
-      direccion &&
-      email &&
-      antecedentes &&
-      contactoEmergencia &&
-      numeroEmergencia &&
-      autorizacion
-    ) {
-      setCompleto(true);
-    } else {
-      setCompleto(false);
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -428,6 +409,8 @@ export default function index() {
                   type='text'
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setcedula(e.target.value)}
+                  maxLength={8}
+                  minLength={6}
                 />
               </div>
             </div>
@@ -657,6 +640,8 @@ export default function index() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteCI(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                   required =  {esMenor ? true : false}
+                  maxLength={8}
+                  minLength={6}
                 />
               </div>
               <div className='flex-1 w-full'>

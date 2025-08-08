@@ -3,7 +3,32 @@ import db from '@/lib/db';
 
 export async function GET() {
     try {
-        const query = 'SELECT * FROM lista_espera WHERE estado = 1';
+        const query = `
+            SELECT 
+                e.id,
+                e.nombre,
+                e.fecha_nacimiento,
+                e.cedula,
+                e.instrumento,
+                e.telefono_estudiantes AS telefono,
+                e.correo_electronico AS email,
+                e.direccion,
+                e.nombre_emergencia,
+                e.numero_emergencia,
+                e.nombre_representante,
+                e.cedula_representante,
+                e.parentesco,
+                e.telefono_representante,
+                e.ocupacion_representante,
+                le.estado
+            FROM 
+                estudiantes e
+            INNER JOIN 
+                lista_espera le ON e.id = le.id_estudiante
+            WHERE 
+                le.estado = 1
+            ORDER BY 
+                le.id ASC`;
         const [rows]: any = await db.query(query);
 
         return NextResponse.json({

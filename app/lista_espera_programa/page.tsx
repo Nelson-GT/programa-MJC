@@ -38,8 +38,8 @@ export default function ListaEspera() {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await fetch('http://localhost:3200/api/lista_espera');
+      const response = await fetch(`/api/lista_espera`);
+      /*const response = await fetch('http://localhost:3200/api/lista_espera'); /* ------------------------------------------------------ */
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -138,7 +138,8 @@ export default function ListaEspera() {
 
       if (!res2.ok) throw new Error("Error creando el usuario");
 
-      const res = await fetch('http://localhost:3200/api/lista_espera', {
+      /*const res = await fetch('http://localhost:3200/api/lista_espera', {*/
+      const res = await fetch('api/lista_espera', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -164,11 +165,13 @@ export default function ListaEspera() {
   const handleRechazarEstudiante = async (idEstudiante: number) => {
     try {
       // Aquí iría la lógica para rechazar al estudiante
-      const res = await fetch('http://localhost:3200/api/lista_espera', {
-        method: 'DELETE',
+      /* const res = await fetch('http://localhost:3200/api/lista_espera', { */
+      const res = await fetch('api/lista_espera', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id_estudiante: idEstudiante
+          id_estudiante: idEstudiante,
+          estado: 0 
         }),
       });
       
@@ -250,7 +253,7 @@ export default function ListaEspera() {
                         <img
                           src="/edit.svg"
                           alt="Generar PDF"
-                          className="h-7 w-7"
+                          className="h-7 w-7 min-h-6 min-w-6"
                         />
                       </Button>
                       <Button 
@@ -264,7 +267,7 @@ export default function ListaEspera() {
                         <img
                           src="/check.svg"
                           alt="Aceptar estudiante"
-                          className="h-7 w-7"
+                          className="h-7 w-7 min-h-6 min-w-6"
                         />
                       </Button>
                       <Button 
@@ -277,7 +280,7 @@ export default function ListaEspera() {
                         <img
                           src="/delete.svg"
                           alt="Rechazar estudiante"
-                          className="h-7 w-7"
+                          className="h-7 w-7 min-h-6 min-w-6"
                         />
                       </Button>
                     </td>

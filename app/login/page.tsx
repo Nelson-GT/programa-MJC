@@ -18,11 +18,7 @@ export default function Login() {
     
 
 
-    if (userName === "estudiante" && password === "estudiante") {
-      router.push("/usuario")
-    } else if (userName === "profesor" && password === "profesor") {
-      router.push("/profesor")
-    } else if (userName === "admin" && password === "admin") {
+    if (userName === "admin" && password === "admin") {
       router.push("/admin")
     } else {
       console.log({userName, password});

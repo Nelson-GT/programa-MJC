@@ -62,7 +62,10 @@ export default function ListaEspera() {
 
   const calcularEdad = (fecha: string) => {
     if (!fecha) return 0;
-    const nacimiento = new Date(fecha);
+    fecha = fecha.replaceAll("/","-")
+    const datos = fecha.split("-")
+    const nacimiento = new Date(`${datos[1]}-${datos[0]}-${datos[2]}`);
+    console.log(nacimiento)
     const hoy = new Date();
     let edad = hoy.getFullYear() - nacimiento.getFullYear();
     const m = hoy.getMonth() - nacimiento.getMonth();
@@ -238,9 +241,7 @@ export default function ListaEspera() {
                   <tr key={estudiante.id}>
                     <td className="px-4 py-2 border-b text-center">{estudiante.id}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.nombre}</td>
-                    <td className="px-4 py-2 border-b text-center">
-                      {calcularEdad(estudiante.fecha_nacimiento)}
-                    </td>
+                    <td className="px-4 py-2 border-b text-center">{calcularEdad(estudiante.fecha_nacimiento)}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.cedula || '—'}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.instrumento || '—'}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.teorica || '—'}</td>

@@ -1,12 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 
+const crypto = require('crypto');
+
+function creartoken(cadena:string) {
+  const sal = crypto.randomBytes(16).toString('hex');
+  const cadenaConSal = cadena + sal;
+  const hash = crypto.createHash('sha256').update(cadenaConSal).digest('hex');
+  return {
+    sal: sal,
+    hash: hash
+  };
+}
+
+const bcrypt = require('bcrypt');
+const saltRounds = 12;
+
+async function hashPassword(password:string) {
+  const salt = await bcrypt.genSalt(saltRounds);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
+}
+/*
+async function comparePassword(password:string, hash:string) {
+  const result = await bcrypt.compare(password, hash);
+  return result;
+}*/
+
 export async function POST(req: NextRequest) {
   try {
-    const {
-      id_estudiante,
-      contraseña,
-    } = await req.json();
+    const { id_estudiante } = await req.json();
 
     if (!id_estudiante) {
       return NextResponse.json(
@@ -15,18 +38,62 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const query = `
-      INSERT INTO users (
-        id_estudiante, password 
-      ) VALUES (?, ?)
+    const selectQuery = `
+      SELECT correo_electronico, nombre, cedula, cedula_representante 
+      FROM estudiantes 
+      WHERE id = ?
+    `;
+    const [estudiante]: any = await db.execute(selectQuery, [id_estudiante]);
+
+    if (!estudiante || estudiante.length === 0) {
+      return NextResponse.json(
+        { message: 'Estudiante no encontrado en la base de datos' },
+        { status: 404 }
+      );
+    }
+
+    const { correo_electronico, nombre, cedula, cedula_representante } = estudiante[0];
+
+    let usernameToInsert;
+    if (correo_electronico === null) {
+      usernameToInsert = nombre;
+    } else {
+      usernameToInsert = correo_electronico;
+    }
+    
+    let passwordToInsert;
+    if (cedula === null || cedula.toUpperCase() === 'N/A' || cedula.toUpperCase() === 'NA') {
+      if (cedula_representante === null || cedula_representante.toUpperCase() === 'N/A' || cedula_representante.toUpperCase() === 'NA') {
+        passwordToInsert = "123456789";
+      } else {
+        passwordToInsert = cedula_representante;
+      }
+    } else {
+      passwordToInsert = cedula;
+    }
+
+    const hashedPassword = await hashPassword(passwordToInsert);
+    
+    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+    const token = creartoken(now)
+
+    const insertQuery = `
+      INSERT INTO users_students (
+        username, password, id_estudiante, remember_token, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
+      usernameToInsert,
+      hashedPassword,
       id_estudiante,
-      contraseña
+      token.hash,
+      now,
+      now,
     ];
 
-    const [result]: any = await db.execute(query, values);
+    const [result]: any = await db.execute(insertQuery, values);
     const insertId = result?.insertId ?? null;
 
     return NextResponse.json({

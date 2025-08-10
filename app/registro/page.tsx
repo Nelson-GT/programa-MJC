@@ -155,7 +155,7 @@ export default function index() {
         var telefonoRepresentante = representanteCodigoTelefono + representanteTelefono;
       }
       if (numeroEmergencia) {
-        var telefono = codigonumeroEmergencia + telefonoEmergencia;
+        var telefonoEmergencia = codigonumeroEmergencia + numeroEmergencia;
       }
       const res = await fetch("/api/pdf_registro", {
         method: "POST",
@@ -349,7 +349,7 @@ export default function index() {
                   max={new Date().toISOString().split('T')[0]}
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={e => {
-                    const fechaAux = `${e.target.value.split("-")[2]}-${e.target.value.split("-")[1]}-${e.target.value.split("-")[0]}`
+                    const fechaAux = `${e.target.value.split("-")[2]}/${e.target.value.split("-")[1]}/${e.target.value.split("-")[0]}`
                     setfechaNacimiento(fechaAux);
                     const fecha = e.target.value;
                     const edadInput = document.getElementById('edad-estudiante') as HTMLInputElement | null;

@@ -1,9 +1,23 @@
 "use client"
 import Button from "@/components/ui/Button"
 import Navbar from "@/components/Navbar"
+import React, { useState } from 'react';
 
 export default function Login() {
 
+  const fetchListaEspera = async () => {
+    try {
+      const response = await fetch(`/api/migracion`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al cargar la lista de espera');
+      }
+      const data = await response.json();
+    } catch (err) {
+      console.error('Error:', err);
+    } finally {
+    }
+  };
   return (
     <>
       <Navbar />
@@ -15,8 +29,14 @@ export default function Login() {
             >
             Lista de Espera
             </Button>
-          <Button className="bg-blue-600 text-white rounded-xl hover:bg-blue-800">
-            Acción 1
+          <Button className="bg-blue-600 text-white rounded-xl hover:bg-blue-800"
+          onClick={() => {
+            const confirm = window.confirm("Esta seguro que desea Iniciar la migración de datos para crear usuarios?")
+            if (confirm) {
+              const data = fetchListaEspera();
+            }
+          }}>
+            Iniciar Migración
           </Button>
         </div>
         <div className="flex flex-col max-w-sm w-full text-gray-600 gap-5">

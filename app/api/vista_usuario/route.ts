@@ -28,3 +28,50 @@ export async function GET(req: NextRequest) {
         );
     }
 }
+
+export async function POST(req: NextRequest) {
+    try {
+        const { nombre } = await req.json();
+
+        if (!nombre) {
+        return NextResponse.json(
+            { message: 'Falta el nombre del estudiante' },
+            { status: 400 }
+        );
+        }
+
+        // Consulta SQL con JOIN para obtener todos los datos
+        const query = `
+        SELECT 
+        ar.definitiva AS nota_final, 
+        ar.nivel AS nivel_inicial, 
+        ar.nivel_obtenido AS siguiente_nivel, 
+        ac.catedra AS materia,
+        pe.nombre AS periodo, 
+        pe.fecha_inicio AS fecha_periodo,
+        ac.profesor AS profesor
+        FROM acta_renglon AS ar INNER JOIN actas AS ac ON ar.acta_id = ac.id INNER JOIN periodos AS pe ON ac.periodo_id = pe.id
+        WHERE ar.estudiante = ? ORDER BY pe.fecha_inicio ASC;
+        `;
+
+        const [notas]: any = await db.execute(query, [nombre]);
+
+        if (notas.length === 0) {
+        return NextResponse.json(
+            { message: 'No se encontraron notas para este estudiante', data: [] },
+            { status: 200 }
+        );
+        }
+
+        return NextResponse.json(
+        { message: 'Notas obtenidas con éxito', data: notas },
+        { status: 200 }
+        );
+    } catch (error) {
+        console.error('Error al obtener notas:', error);
+        return NextResponse.json(
+        { message: 'Error interno del servidor', error },
+        { status: 500 }
+        );
+    }
+}

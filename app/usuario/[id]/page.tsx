@@ -7,54 +7,17 @@ import React, { useState, useEffect } from "react"
 
 const foto = "/musico.jpg";
 
-const estudiante = {
-  nombre: "Pedro Perez",
-  cedula: "12345678",
-  telefono: "04129999999",
-  email: "pperez@email.com",
-  instrumento: "Violín",
-  teoricas: ["Historia", "Solfeo"],
-  otros: ["Coro", "Armonía"],
-  estatusAdministrativo: "Activo",
-  estatusAcademico: "Regular",
-}
-
 type Nota = {
-  periodo: string;
-  nivel_inicial: string;
-  nota_final: number;
-  estatus: string;
-  materia: string;
-  siguiente_nivel: string;
+    nota_final: number;
+    nivel_inicial: string;
+    siguiente_nivel: string;
+    materia: string;
+    periodo: string;
+    fecha_periodo: string;
+    profesor: string;
 };
 
-const notas_prueba: Nota[] = [
-  { periodo: "2024-1", nivel_inicial: "A1", nota_final: 18.5, estatus: "Promovido", materia: "Violín", siguiente_nivel: "A2" },
-  { periodo: "2024-2", nivel_inicial: "A2", nota_final: 17.2, estatus: "Continua", materia: "Violín", siguiente_nivel: "A2" },
-  { periodo: "2024-3", nivel_inicial: "A2", nota_final: 15.8, estatus: "Promovido", materia: "Violín" , siguiente_nivel: "B1" },
-  { periodo: "2025-1", nivel_inicial: "B1", nota_final: 16.9, estatus: "Promovido", materia: "Violín" , siguiente_nivel: "B2" },
-  { periodo: "2024-2", nivel_inicial: "Primer año", nota_final: 12.3, estatus: "Promovido", materia: "Solfeo" , siguiente_nivel: "Segundo año" },
-  { periodo: "2024-3", nivel_inicial: "Segundo año", nota_final: 13.8, estatus: "Promovido", materia: "Solfeo" , siguiente_nivel: "Tercer año" },
-  { periodo: "2025-1", nivel_inicial: "Tercer año", nota_final: 15.0, estatus: "Promovido", materia: "Solfeo" , siguiente_nivel: "Cuarto año" },
-  { periodo: "2024-3", nivel_inicial: "A1", nota_final: 10.5, estatus: "Continua", materia: "Coro" , siguiente_nivel: "A1" },
-  { periodo: "2025-1", nivel_inicial: "A1", nota_final: 11.7, estatus: "Continua", materia: "Coro" , siguiente_nivel: "A1" },
-];
-
-function agruparPorMateria(notas: Nota[]): Record<string, Nota[]> {
-  return notas.reduce((acc, nota) => {
-    acc[nota.materia] = acc[nota.materia] || [];
-    acc[nota.materia].push(nota);
-    return acc;
-  }, {} as Record<string, Nota[]>);
-}
-
-const notasPorMateria = agruparPorMateria(notas_prueba);
-
-export default function Estudiante() {
-  const { id } = useParams()
-  const [estudiante, setEstudiante] = useState<Estudiante | null>(null);
-
-  interface Estudiante {
+interface Estudiante {
     id: number;
     nombre: string;
     genero: string;
@@ -66,120 +29,188 @@ export default function Estudiante() {
     instrumento: string;
     codigo_instrumento: string;
     nombre_representante: string;
-    ocupacion_representante: string;
-    parentesco: string;
+    ocupacion_representante?: string;
+    parentesco?: string;
     cedula_representante: string;
     telefono_estudiantes: string;
     reperesentante_telefono: string;
     nombre_emergencia: string;
     numero_emergencia: string;
-    activo:number;
+    activo: number;
+}
 
-/*
-    institucion_educacional: string;
-    ocupacion: string;
-    profesion: string;
-    lugar_trabajo: string;
-    alergico: string;
-    antecedentes: string;
-    antecedentes_especificados: string;
-    reperesentante_profesion: string;
-    reperesentante_lugar_trabajo: string;
-    reperesentante_direccion: string;
-    reperesentante_email: string;
-    teorica: string;
-    otros: string;
-    */
-  }
+function agruparPorMateria(notas: Nota[]): Record<string, Nota[]> {
+    return notas.reduce((acc, nota) => {
+        acc[nota.materia] = acc[nota.materia] || [];
+        acc[nota.materia].push(nota);
+        return acc;
+    }, {} as Record<string, Nota[]>);
+}
 
+export default function Estudiante() {
+    const { id } = useParams();
+    const [estudiante, setEstudiante] = useState<Estudiante | null>(null);
+    const [notasAgrupadas, setNotasAgrupadas] = useState<Record<string, Nota[]> | null>(null);
+    const [loadingEstudiante, setLoadingEstudiante] = useState(true);
+    const [loadingNotas, setLoadingNotas] = useState(false); // Nuevo estado de carga para notas
+    const [errorEstudiante, setErrorEstudiante] = useState<string | null>(null);
+    const [errorNotas, setErrorNotas] = useState<string | null>(null); // Nuevo estado de error para notas
+
+    const fetchDatosEstudiante = async () => {
+        try {
+            setLoadingEstudiante(true);
+            const resEstudiante = await fetch(`/api/vista_usuario?id=${id}`);
+            if (!resEstudiante.ok) {
+                throw new Error(`Error al obtener datos del estudiante: ${resEstudiante.statusText}`);
+            }
+            const dataEstudiante = await resEstudiante.json();
+            setEstudiante(dataEstudiante.data[0]);
+        } catch (err) {
+            console.error('Error al obtener datos del estudiante:', err);
+            setErrorEstudiante('No se pudieron cargar los datos del estudiante.');
+        } finally {
+            setLoadingEstudiante(false);
+        }
+    };
+
+    const fetchNotasEstudiante = async (nombre: string) => {
+        try {
+            setLoadingNotas(true);
+            const resNotas = await fetch("/api/vista_usuario", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ nombre }),
+            });
+            if (!resNotas.ok) {
+                throw new Error(`Error al obtener notas: ${resNotas.statusText}`);
+            }
+            const result = await resNotas.json();
+            const notasAgrupadas = agruparPorMateria(result.data);
+            setNotasAgrupadas(notasAgrupadas);
+        } catch (err) {
+            console.error('Error al obtener las notas:', err);
+            setErrorNotas('No se pudieron cargar las notas del estudiante.');
+            setNotasAgrupadas(null); // Asegura que no se muestren datos parciales
+        } finally {
+            setLoadingNotas(false);
+        }
+    };
+
+    useEffect(() => {
+        if (id) {
+            fetchDatosEstudiante();
+        }
+    }, [id]);
     
-  const fetchEstudiante = async () => {
-    try {
-      const res = await fetch(`/api/vista_usuario?id=${id}`);
-      const data = await res.json();
+    // Nueva dependencia para cargar notas una vez que los datos del estudiante están disponibles
+    useEffect(() => {
+        if (estudiante?.nombre) {
+            fetchNotasEstudiante(estudiante.nombre);
+        }
+    }, [estudiante]);
 
-      if (!res.ok) {
-        console.log(`Ha ocurrido un error: ${data.message}`);
-        return;
-      }
-      setEstudiante(data.data[0]);
-      console.log("Datos del estudiante:", data.data);
-    } catch (err) {
-      console.error('Error al obtener lista_espera:', err);
-    }
-  };
-  useEffect(() => {
-    fetchEstudiante();
-  }, []);
-
-  return (
-    <>
-      <Head>
-        <title>Información del Estudiante</title>
-      </Head>
-      <Navbar />
-      <div className="w-full flex flex-col items-center px-4 py-8">
-
-        {/* Información Personal */}
-        <div className="bg-white rounded-xl p-3 mb-8">
-          <div className="p-12 border border-gray-300 rounded-xl shadow-xl">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Información Personal</h2>
-            <div className=" flex flex-col md:flex-row items-center gap-8 w-full max-w-5xl mb-8">
-              <img
-                src={foto}
-                alt={estudiante?.nombre || "Foto del Estudiante"}
-                className="w-36 h-36 rounded-full object-cover border"
-              />
-              <div className="flex-1 flex flex-col md:flex-row gap-8 w-full">
-                <div className="flex-1 mb-4 md:mb-0">
-                  <div className="text-gray-600 mb-1"><b>Nombre:</b> {estudiante?.nombre}</div>
-                  <div className="text-gray-600 mb-1"><b>Cédula:</b> {estudiante?.cedula}</div>
-                  <div className="text-gray-600 mb-1"><b>Teléfono:</b> {estudiante?.telefono_estudiantes}</div>
-                  <div className="text-gray-600"><b>Email:</b> {estudiante?.correo_electronico}</div>
-                </div>
-                <div className="flex-1 mb-4 md:mb-0">
-                  <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante?.instrumento}</div>
-                  <div className="text-gray-600 mb-1"><b>Teóricas:</b> Materias teoricas</div>
-                  <div className="text-gray-600"><b>Otros:</b> Otras materias</div>
-                </div>
-                <div className="flex-1">
-                  <div className="text-gray-600 mb-1"><b>Estatus Administrativo:</b> estatus</div>
-                  <div className="text-gray-600"><b>Estatus Académico:</b> activo</div>
-                </div>
-              </div>
+    if (loadingEstudiante) {
+        return (
+            <div className="w-full flex justify-center items-center h-screen">
+                <p className="text-xl">Cargando...</p>
             </div>
-          </div>
-        </div>
+        );
+    }
 
-        {Object.entries(notasPorMateria).map(([materia, registros]) => ( /* Divide por materia*/
-          <div key={materia} className="bg-white shadow rounded-lg p-6 w-full max-w-3xl mb-8">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Historial Académico: {materia}</h3>
-            <table className="min-w-full bg-white border border-gray-200 rounded-lg mb-2 shadow-md hover:shadow-xl duration-500">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700">
-                  <th className="px-4 py-2 border-b border-gray-300 ">Periodo</th>
-                  <th className="px-4 py-2 border-b border-gray-300">Nivel Inicial</th>
-                  <th className="px-4 py-2 border-b border-gray-300">Nota Final</th>
-                  <th className="px-4 py-2 border-b border-gray-300">Estatus</th>
-                  <th className="px-4 py-2 border-b border-gray-300">Siguiente Nivel</th>
-                </tr>
-              </thead>
-              <tbody>
-                {registros.map((nota, i) => (
-                  <tr key={i} className="hover:bg-gray-100">
-                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.periodo}</td>
-                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.nivel_inicial}</td>
-                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.nota_final}</td>
-                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.estatus}</td>
-                    <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.siguiente_nivel}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))}
-      </div>
-      <Footer />
-    </>
-  )
+    if (errorEstudiante) {
+        return (
+            <div className="w-full flex justify-center items-center h-screen">
+                <p className="text-xl text-red-500">Error: {errorEstudiante}</p>
+            </div>
+        );
+    }
+    
+    // Si no hay estudiante, muestra un mensaje
+    if (!estudiante) {
+        return (
+            <div className="w-full flex justify-center items-center h-screen">
+                <p className="text-xl text-gray-600">Estudiante no encontrado.</p>
+            </div>
+        );
+    }
+
+    return (
+        <>
+            <Head>
+                <title>Información del Estudiante</title>
+            </Head>
+            <Navbar />
+            <div className="w-full flex flex-col items-center px-4 py-8">
+                <div className="bg-white rounded-xl p-4 mb-8">
+                    <div className="p-12 border border-gray-300 rounded-xl shadow-md hover:shadow-xl duration-500">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Información Personal</h2>
+                        <div className="flex flex-col md:flex-row items-center gap-8 w-full max-w-5xl mb-8">
+                            <img
+                                src={foto}
+                                alt={estudiante.nombre || "Foto del Estudiante"}
+                                className="w-36 h-36 rounded-full object-cover border"
+                            />
+                            <div className="flex-1 flex flex-col md:flex-row gap-8 w-full">
+                                <div className="flex-1 mb-4 md:mb-0">
+                                    <div className="text-gray-600 mb-1"><b>Nombre:</b> {estudiante.nombre}</div>
+                                    <div className="text-gray-600 mb-1"><b>Cédula:</b> {estudiante.cedula}</div>
+                                    <div className="text-gray-600 mb-1"><b>Teléfono:</b> {estudiante.telefono_estudiantes}</div>
+                                    <div className="text-gray-600"><b>Email:</b> {estudiante.correo_electronico}</div>
+                                </div>
+                                <div className="flex-1 mb-4 md:mb-0">
+                                    <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante.instrumento}</div>
+                                    <div className="text-gray-600 mb-1"><b>Teóricas:</b> Materias teoricas</div>
+                                    <div className="text-gray-600"><b>Otros:</b> Otras materias</div>
+                                </div>
+                                <div className="flex-1">
+                                    <div className="text-gray-600 mb-1"><b>Estatus Administrativo:</b> estatus</div>
+                                    <div className="text-gray-600"><b>Estatus Académico:</b> activo</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Historial Académico: Renderizado condicional */}
+                {loadingNotas ? (
+                    <p className="text-lg text-gray-600">Cargando notas...</p>
+                ) : errorNotas ? (
+                    <p className="text-lg text-red-500">Error: {errorNotas}</p>
+                ) : notasAgrupadas && Object.entries(notasAgrupadas).length > 0 ? (
+                    Object.entries(notasAgrupadas).map(([materia, registros]) => (
+                        <div key={materia} className="bg-white shadow rounded-lg p-6 w-full max-w-3xl mb-8">
+                            <h3 className="text-xl font-semibold text-gray-800 mb-4">Historial Académico: {materia}</h3>
+                            <table className="min-w-full bg-white border border-gray-200 rounded-lg mb-2 shadow-md hover:shadow-xl duration-500">
+                                <thead>
+                                    <tr className="bg-gray-100 text-gray-700">
+                                        <th className="px-4 py-2 border-b border-gray-300">Periodo</th>
+                                        <th className="px-4 py-2 border-b border-gray-300">Profesor</th>
+                                        <th className="px-4 py-2 border-b border-gray-300">Nivel Inicial</th>
+                                        <th className="px-4 py-2 border-b border-gray-300">Nota Final</th>
+                                        <th className="px-4 py-2 border-b border-gray-300">Siguiente Nivel</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {registros.map((nota, i) => (
+                                        <tr key={i} className="hover:bg-gray-100">
+                                            <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.periodo}</td>
+                                            <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.profesor}</td>
+                                            <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.nivel_inicial}</td>
+                                            <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.nota_final}</td>
+                                            <td className="px-4 py-2 border-b border-gray-300 text-center">{nota.siguiente_nivel}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ))
+                ) : (
+                    !loadingNotas && <p className="text-lg text-gray-600">No se encontraron notas para este estudiante.</p>
+                )}
+            </div>
+            <Footer />
+        </>
+    );
 }

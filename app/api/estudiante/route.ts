@@ -59,8 +59,8 @@ export async function POST(req: Request) {
         const query = `INSERT INTO estudiantes 
             (nombre, genero, cedula, fecha_nacimiento, correo_electronico, direccion, telefono_estudiantes, 
             nombre_emergencia, numero_emergencia, nombre_representante, cedula_representante, 
-            parentesco, telefono_representante, ocupacion_representante, instrumento, created_at, updated_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            parentesco, telefono_representante, ocupacion_representante, instrumento, created_at, updated_at, activo) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
         const values = [
             nombre,
@@ -79,7 +79,8 @@ export async function POST(req: Request) {
             reperesentante_profesion,
             instrumentos,
             new Date().toISOString().slice(0, 19).replace('T', ' '),
-            new Date().toISOString().slice(0, 19).replace('T', ' ') 
+            new Date().toISOString().slice(0, 19).replace('T', ' '),
+            0 /* Validación de que cuando se genere el registro, el estudiante este inactivo */
         ];
 
         console.log('Datos recibidos:', data);

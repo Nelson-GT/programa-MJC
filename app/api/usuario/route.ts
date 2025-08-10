@@ -21,11 +21,6 @@ async function hashPassword(password:string) {
   const hash = await bcrypt.hash(password, salt);
   return hash;
 }
-/*
-async function comparePassword(password:string, hash:string) {
-  const result = await bcrypt.compare(password, hash);
-  return result;
-}*/
 
 export async function POST(req: NextRequest) {
   try {
@@ -54,15 +49,15 @@ export async function POST(req: NextRequest) {
 
     const { correo_electronico, nombre, cedula, cedula_representante } = estudiante[0];
 
-    let usernameToInsert;
-    if (correo_electronico === null) {
+    let usernameToInsert = nombre;
+    /*if (correo_electronico === null) {
       usernameToInsert = nombre;
     } else {
       usernameToInsert = correo_electronico;
-    }
-    
+    }*/
+
     let passwordToInsert;
-    if (cedula === null || cedula.toUpperCase() === 'N/A' || cedula.toUpperCase() === 'NA') {
+    if (cedula === null || cedula.toUpperCase() === 'N/A' || cedula.toUpperCase() === 'NA' || cedula.startsWith("000")) {
       if (cedula_representante === null || cedula_representante.toUpperCase() === 'N/A' || cedula_representante.toUpperCase() === 'NA') {
         passwordToInsert = "123456789";
       } else {
@@ -95,6 +90,11 @@ export async function POST(req: NextRequest) {
 
     const [result]: any = await db.execute(insertQuery, values);
     const insertId = result?.insertId ?? null;
+
+    const updateQuery = `
+      UPDATE estudiantes SET activo = 1 WHERE id = ?
+    `;
+    const [datos]: any = await db.execute(updateQuery, [id_estudiante]);
 
     return NextResponse.json({
       message: 'Usuario creado exitosamente',

@@ -1,6 +1,6 @@
 "use client";
 import Head from "next/head";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Brand from "@/components/Brand";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -9,6 +9,8 @@ import Select from "@/components/ui/Select";
 
 export default function index() {
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [rifError, setRifError] = useState("")
+  const [rifRepresentateError, setRifRepresentanteError] = useState("")
 
   const [nombreEstudiante, setnombreEstudiante] = useState<string | null>(null);
   const [fechaNacimiento, setfechaNacimiento] = useState<string | null>(null);
@@ -50,7 +52,7 @@ export default function index() {
   const [instrumentos, setInstrumentos] = useState<Campo[]>([{ id: crypto.randomUUID(), valor: "" }]);
   const [teoricas, setTeoricas] = useState<Campo[]>([{ id: crypto.randomUUID(), valor: "" }]);
   const [otros, setOtros] = useState<Campo[]>([{ id: crypto.randomUUID(), valor: "" }]);
-
+  
   const añadirInstrumento = () => {
     const newField: Campo = { id: crypto.randomUUID(), valor: "" };
     if (instrumentos.length > 2) {
@@ -61,7 +63,7 @@ export default function index() {
       setInstrumentos([...instrumentos, newField]);
     }
   };
-
+  
   const añadirTeoricas = () => {
     const newField: Campo = { id: crypto.randomUUID(), valor: "" };
     if (teoricas.length > 2) {
@@ -72,7 +74,7 @@ export default function index() {
       setTeoricas([...teoricas, newField]);
     }
   };
-
+  
   const añadirOtros = () => {
     const newField: Campo = { id: crypto.randomUUID(), valor: "" };
     if (otros.length > 2) {
@@ -83,7 +85,7 @@ export default function index() {
       setOtros([...otros, newField]);
     }
   };
-
+  
   const handleChangeInstrumento = (id: string, newValue: string) => {
     console.log(newValue)
     setInstrumentos(prev =>
@@ -93,7 +95,7 @@ export default function index() {
     );
     console.log(instrumentos)
   };
-
+  
   const handleChangeTeoricas = (id: string, newValue: string) => {
     setTeoricas(prev =>
       prev.map(field =>
@@ -101,7 +103,7 @@ export default function index() {
       )
     );
   };
-
+  
   const handleChangeOtros = (id: string, newValue: string) => {
     setOtros(prev =>
       prev.map(field =>
@@ -109,7 +111,7 @@ export default function index() {
       )
     );
   };
-
+  
   const eliminarInstrumento = (id: string) => {
     setInstrumentos(prev => prev.filter(field => field.id !== id));
   };
@@ -117,13 +119,13 @@ export default function index() {
   const eliminarTeorica = (id: string) => {
     setTeoricas(prev => prev.filter(field => field.id !== id));
   };
-
+  
   const eliminarOtros = (id: string) => {
     setOtros(prev => prev.filter(field => field.id !== id));
   };
-
+  
   const [esMenor, setEsMenor] = useState<boolean>(true);
-
+  
   const [photo64, setphoto64] = useState<String | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
@@ -139,7 +141,7 @@ export default function index() {
       reader.readAsDataURL(file); // Convierte a Base64
     }
   }
-
+  
   const handleGenerarPDF = async (): Promise<void> => {
     try {
       const instrumentosData = instrumentos.map(item => item.valor).join(", ");
@@ -182,7 +184,7 @@ export default function index() {
           alergiasEspecificadas:alergiasEspecificadas || " ",
           contactoEmergencia:contactoEmergencia || " ",
           numeroEmergencia: telefonoEmergencia,
-
+          
           representanteNombre: representanteNombre || " ",
           representanteCI: representanteCI || " ",
           representanteRif: representanteRIF || " ",
@@ -193,7 +195,7 @@ export default function index() {
           representanteLugarTrabajo:representanteLugarTrabajo || " ",
           representanteDireccion: representanteDireccion || " ",
           representanteEmail: representanteEmail || " ",
-
+          
           instrumentosData: instrumentosData || " ",
           teoricasData: teoricasData || " ",
           otrosData: otrosData || " ",
@@ -206,14 +208,14 @@ export default function index() {
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       window.open(url, "_blank")
-
+      
       const link = document.createElement("a")
       link.href = url
       link.download = `planilla-${Date.now()}.pdf`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-
+      
       URL.revokeObjectURL(url)
     } catch (error) {
       console.error("Error al generar PDF:", error)
@@ -263,15 +265,62 @@ export default function index() {
     }
   }
 
+  const validarRif = (rif: string) => {
+    const mayuscula = rif.trim().toUpperCase();
+    const rifRegex = /^[JV]\d{9}$/;
+    return rifRegex.test(mayuscula);
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
-    if (form.checkValidity()) {
+    const validacionRif = validarRif(rif || "V123456789");
+    console.log(validacionRif)
+    const validacionRifRepresentante = validarRif(representanteRIF || "V123456789");
+    console.log(validacionRifRepresentante)
+    if (validacionRif) {
+      setRifError("Formato de RIF invalido. Usa J o V seguido de 9 números.")
+    }
+    if (validacionRifRepresentante) {
+      setRifRepresentanteError("Formato de RIF invalido. Usa J o V seguido de 9 números.")
+    }
+    if (form.checkValidity() && validacionRif && validacionRifRepresentante) {
       setShowModal(true);
       handleGenerarPDF();
     }
   };
-
+  const [catedraInstrumentos, setCatedrasInstrumentos] = useState<string[]>([]);
+  const [catedraTeoricas, setCatedrasTeoricas] = useState<string[]>([]);
+  const [catedraOtros, setCatedrasOtros] = useState<string[]>([]);
+  const fetchCatedras = async () => {
+    try {
+      const response = await fetch(`/api/catedras`);
+      const data = await response.json();
+      console.log(data.message)
+      data.data.forEach((catedra:any) => {
+        switch (catedra.tipo) {
+          case "instrumento":
+            setCatedrasInstrumentos(prev => [...prev, catedra.nombre])
+            return
+          case "teorica":
+            setCatedrasTeoricas(prev => [...prev, catedra.nombre])
+            return
+          case "otro":
+            setCatedrasOtros(prev => [...prev, catedra.nombre])
+            return
+          default:
+            setCatedrasOtros(prev => [...prev, catedra.nombre])
+        }
+      })
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  };
+  
+    useEffect(() => {
+      fetchCatedras();
+    }, []);
+  
   return (
     <div className="fondo">
       <Head>
@@ -409,6 +458,7 @@ export default function index() {
                   type='text'
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setcedula(e.target.value)}
+                  placeholder="12345678"
                   maxLength={8}
                   minLength={6}
                 />
@@ -452,8 +502,16 @@ export default function index() {
                 <Input
                   type='text'
                   className='w-full mt-3 focus:border-blue-600'
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRif(e.target.value)}
+                  placeholder="V123456789"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>{setRif(e.target.value)
+                    if (rifError !== ""){
+                      setRifError("")
+                    }
+                  }}
+                  maxLength={10}
+                  minLength={10}
                 />
+                <span className="colo-red-600">{rifError}</span>
               </div>
             </div>
 
@@ -505,6 +563,7 @@ export default function index() {
                   type='text'
                   required
                   className='w-full mt-3 focus:border-blue-600'
+                  placeholder="Valencia"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setdireccion(e.target.value)}
                 />
               </div>
@@ -518,6 +577,7 @@ export default function index() {
                   type='email'
                   required
                   className='w-full mt-3 focus:border-blue-600'
+                  placeholder="ejemplo@gmail.com"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setemail(e.target.value)}
                 />
               </div>
@@ -640,6 +700,7 @@ export default function index() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteCI(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                   required =  {esMenor ? true : false}
+                  placeholder="12345678"
                   maxLength={8}
                   minLength={6}
                 />
@@ -726,6 +787,7 @@ export default function index() {
                   type='text'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteDireccion(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
+                  placeholder="Valencia"
                   required =  {esMenor ? true : false}
                 />
               </div>
@@ -735,10 +797,18 @@ export default function index() {
                 <label className='font-medium'>R.I.F. {esMenor ? "*" : ""}</label>
                 <Input
                   type='text'
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteRIF(e.target.value)}
+                  placeholder="V123456789"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setrepresentanteRIF(e.target.value);
+                    if (rifRepresentateError !== "") {
+                      setRifRepresentanteError("")
+                    }
+                  }}
+                  maxLength={10}
+                  minLength={10}
                   className='w-full mt-3 focus:border-blue-600'
                   required =  {esMenor ? true : false}
                 />
+                <span className="colo-red-600">{rifRepresentateError}</span>
               </div>
             </div>
             <div className='flex flex-col sm:flex-row gap-4 w-full'>
@@ -749,6 +819,7 @@ export default function index() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setrepresentanteEmail(e.target.value)}
                   className='w-full mt-3 focus:border-blue-600'
                   required =  {esMenor ? true : false}
+                  placeholder="ejemplo@gmail.com"
                 />
               </div>
             </div>
@@ -776,12 +847,9 @@ export default function index() {
                             onChange={(e) => handleChangeInstrumento(item.id, e.target.value)}
                           >
                             <option value=''>Seleccione una opción</option>
-                            <option value='Violín'>Violín</option>
-                            <option value='Viola'>Viola</option>
-                            <option value='Cello'>Cello</option>
-                            <option value='Bajo'>Bajo</option>
-                            <option value='Trompeta'>Trompeta</option>
-                            <option value='Piano'>Piano</option>
+                            {catedraInstrumentos.map((catedra, i) => (
+                              <option value={catedra || ""} key={i}>{catedra}</option>
+                            ))}
                           </Select>
                           <button
                             type="button"
@@ -812,12 +880,16 @@ export default function index() {
                       <div className='flex-1 w-full'>
                         <label className='font-medium'>{idx === 0 && "Teóricas"}</label>
                         <div className="flex gap-2 mt-3">
-                          <Input
-                            type='text'
-                            className='w-full focus:border-blue-600'
-                            name={`teorica-${item.id}`}
-                            onChange={(e) => {handleChangeTeoricas(item.id, e.target.value);console.log("Cambio")}}
-                          />
+                          <Select
+                            className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
+                            name={`instrumento-${item.id}`}
+                            onChange={(e) => handleChangeInstrumento(item.id, e.target.value)}
+                          >
+                            <option value=''>Seleccione una opción</option>
+                            {catedraTeoricas.map((catedra, i) => (
+                              <option value={catedra || ""} key={i}>{catedra}</option>
+                            ))}
+                          </Select>
                           <button
                             type="button"
                             className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded flex items-center"
@@ -847,12 +919,16 @@ export default function index() {
                       <div className='flex-1 w-full'>
                         <label className='font-medium'>{idx === 0 && "Otro(s)"}</label>
                         <div className="flex gap-2 mt-3">
-                          <Input
-                            type='text'
-                            className='w-full focus:border-blue-600'
-                            name={`otro-${item.id}`}
-                            onChange={(e) => handleChangeOtros(item.id, e.target.value)}
-                          />
+                          <Select
+                            className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
+                            name={`instrumento-${item.id}`}
+                            onChange={(e) => handleChangeInstrumento(item.id, e.target.value)}
+                          >
+                            <option value=''>Seleccione una opción</option>
+                            {catedraOtros.map((catedra, i) => (
+                              <option value={catedra || ""} key={i}>{catedra}</option>
+                            ))}
+                          </Select>
                           <button
                             type="button"
                             className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded flex items-center"

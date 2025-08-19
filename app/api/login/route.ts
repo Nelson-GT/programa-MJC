@@ -1,37 +1,78 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
-
+import { SignJWT } from 'jose';
+import { TextEncoder } from 'util';
 const bcrypt = require('bcrypt');
-async function comparePassword(password:string, hash:string) {
-    const result = await bcrypt.compare(password, hash);
-    return result;
+
+const JWT_CONFIG = {
+  secret: new TextEncoder().encode(process.env.JWT_SECRET || 'tu-secreto-seguro'),
+  algorithm: 'HS256',
+  expiresIn: '1h',
+  cookieName: 'auth-token',
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: 'strict' as const,
+    path: '/',
+    maxAge: 60 * 60 * 1
+  }
+};
+async function comparePassword(password: string, hash: string) {
+  const result = await bcrypt.compare(password, hash);
+  return result;
 }
 
 export async function POST(req: NextRequest) {
-    try {
-        const { email, password } = await req.json();
+  try {
+    const { email, password } = await req.json();
 
-        const [estudianteRows]: any = await db.query(
-        'SELECT password, id_estudiante FROM users_students WHERE username = ?',
-        [email]
-        );
+    const [estudianteRows]: any = await db.query(
+      'SELECT password, id_estudiante FROM users_students WHERE username = ?',
+      [email]
+    );
 
-        const estudiante = estudianteRows[0];
-        console.log("Estudiante encontrado:", estudiante);
-        if (!estudiante) {
-        return NextResponse.json({ message: 'Estudiante no encontrado' }, { status: 404 });
-        }
-
-        // Comparar contraseña
-        const isMatch = await comparePassword(password, estudiante.password);
-        if (!isMatch) {
-        return NextResponse.json({ message: 'Contraseña incorrecta' }, { status: 401 });
-        }
-
-        // Autenticación exitosa
-        return NextResponse.json({ message: 'Login exitoso', userId: estudiante.id_estudiante });
-    } catch (error) {
-        console.error('Error en login:', error);
-        return NextResponse.json({ message: 'Error interno', error }, { status: 500 });
+    const estudiante = estudianteRows[0];
+    
+    if (!estudiante) {
+      return NextResponse.json(
+        { message: 'Estudiante no encontrado' }, 
+        { status: 404 }
+      );
     }
+    const isMatch = await comparePassword(password, estudiante.password);
+    if (!isMatch) {
+      return NextResponse.json(
+        { message: 'Contraseña incorrecta' }, 
+        { status: 401 }
+      );
+    }
+    const token = await new SignJWT({ 
+      userId: estudiante.id_estudiante,
+      role: 'student' 
+    })
+      .setProtectedHeader({ alg: JWT_CONFIG.algorithm })
+      .setIssuedAt()
+      .setExpirationTime(JWT_CONFIG.expiresIn)
+      .sign(JWT_CONFIG.secret);
+    const response = NextResponse.json(
+      { 
+        message: 'Login exitoso', 
+        userId: estudiante.id_estudiante 
+      },
+      { status: 200 }
+    );
+    response.cookies.set({
+      name: JWT_CONFIG.cookieName,
+      value: token,
+      ...JWT_CONFIG.cookieOptions
+    });
+
+    return response;
+
+  } catch (error) {
+    console.error('Error en login:', error);
+    return NextResponse.json(
+      { message: 'Error interno', error }, 
+      { status: 500 }
+    );
+  }
 }

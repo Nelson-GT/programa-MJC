@@ -2,11 +2,15 @@ import Image from 'next/image'
 import SectionWrapper from '@/components/SectionWrapper'
 
 import hesperia from '@/public/logos/hesperia.png'
+import unesco from '@/public/logos/unesco-pdf-removebg-preview.png'
 import ujap from '@/public/logos/ujap.png'
 import clx from '@/public/logos/clx.png'
-import redvital from '@/public/logos/redvital.png'
 
 const logos = [
+    {
+        src: unesco,
+        alt: "Unesco"
+    },
     {
         src: hesperia,
         alt: "Hesperia WTC Valencia"
@@ -14,10 +18,6 @@ const logos = [
     {
         src: ujap,
         alt: "Universidad Jose Antonio Páez"
-    },
-    {
-        src: redvital,
-        alt: "Redvital"
     },
     {
         src: clx,

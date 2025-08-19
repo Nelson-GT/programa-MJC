@@ -5,7 +5,7 @@ import { TextEncoder } from 'util';
 const bcrypt = require('bcrypt');
 
 const JWT_CONFIG = {
-  secret: new TextEncoder().encode(process.env.JWT_SECRET || 'tu-secreto-seguro'),
+  secret: new TextEncoder().encode(process.env.JWT_SECRET || 'secreto-seguro'),
   algorithm: 'HS256',
   expiresIn: '1h',
   cookieName: 'auth-token',

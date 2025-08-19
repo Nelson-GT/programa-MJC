@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         pe.nombre AS periodo, 
         pe.fecha_inicio AS fecha_periodo,
         ac.profesor AS profesor
-        FROM acta_renglon AS ar INNER JOIN actas AS ac ON ar.acta_id = ac.id INNER JOIN periodos AS pe ON ac.periodo_id = pe.id
+        FROM acta_renglon AS ar JOIN actas AS ac ON ar.acta_id = ac.id JOIN periodos AS pe ON ac.periodo_id = pe.id
         WHERE ar.estudiante = ? ORDER BY pe.fecha_inicio ASC;
         `;
 

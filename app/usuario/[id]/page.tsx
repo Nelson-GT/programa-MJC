@@ -73,7 +73,7 @@ export default function Estudiante() {
         }
     };
 
-    const fetchNotasEstudiante = async (nombre: string) => {
+    const fetchNotasEstudiante = async (id: string) => {
         try {
             setLoadingNotas(true);
             const resNotas = await fetch("/api/vista_usuario", {
@@ -81,7 +81,7 @@ export default function Estudiante() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ nombre }),
+                body: JSON.stringify({ id }),
             });
             if (!resNotas.ok) {
                 throw new Error(`Error al obtener notas: ${resNotas.statusText}`);
@@ -104,12 +104,12 @@ export default function Estudiante() {
         }
     }, [id]);
     
-    // Nueva dependencia para cargar notas una vez que los datos del estudiante están disponibles
     useEffect(() => {
-        if (estudiante?.nombre) {
-            fetchNotasEstudiante(estudiante.nombre);
+        if (id) {
+            const idStr = Array.isArray(id) ? id[0] : id;
+            fetchNotasEstudiante(idStr);
         }
-    }, [estudiante]);
+    }, [id]);
 
     if (loadingEstudiante) {
         return (

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
+import { crearUsuario } from "@/app/api/usuario/route";
 
 export async function GET() {
     try {
@@ -8,17 +9,16 @@ export async function GET() {
             `;
         const [rows]: any = await db.query(query);
 
-        console.log(`Datos obtenidos correctamente (cantidad de registros: ${rows.length})`)
+        console.log(`Datos obtenidos correctamente (cantidad de registros: ${rows.length})`);
+
         for (const estudiante of rows) {
-          const response = await fetch(`http://localhost:3000/api/usuario`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id_estudiante: estudiante.id }),
-          });
-          const data = await response.json();
-          console.log(data)
+            try {
+                // Llama a la lógica directamente, sin necesidad de fetch
+                const result = await crearUsuario(estudiante.id);
+                console.log(`Usuario creado para el estudiante ${estudiante.id}:`, result);
+            } catch (creationError:any) {
+                console.error(`Error al crear usuario para el estudiante ${estudiante.id}:`, creationError.message);
+            }
         }
         return NextResponse.json({
             message: 'Migración completada exitosamente',

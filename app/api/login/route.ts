@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     const { email, password } = await req.json();
 
     const [estudianteRows]: any = await db.query(
-      'SELECT password, id_estudiante FROM users_students WHERE username = ?',
+      'SELECT password, id_estudiante, remember_token FROM users WHERE username = ? AND role_id = 3',
       [email]
     );
 
@@ -47,7 +47,8 @@ export async function POST(req: NextRequest) {
     }
     const token = await new SignJWT({ 
       userId: estudiante.id_estudiante,
-      role: 'student' 
+      role: 'student',
+      remember_token: estudiante.remember_token,
     })
       .setProtectedHeader({ alg: JWT_CONFIG.algorithm })
       .setIssuedAt()

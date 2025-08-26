@@ -31,11 +31,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const { nombre } = await req.json();
+        const { id } = await req.json();
 
-        if (!nombre) {
+        if (!id) {
         return NextResponse.json(
-            { message: 'Falta el nombre del estudiante' },
+            { message: 'Falta el id del estudiante' },
             { status: 400 }
         );
         }
@@ -51,10 +51,10 @@ export async function POST(req: NextRequest) {
         pe.fecha_inicio AS fecha_periodo,
         ac.profesor AS profesor
         FROM acta_renglon AS ar JOIN actas AS ac ON ar.acta_id = ac.id JOIN periodos AS pe ON ac.periodo_id = pe.id
-        WHERE ar.estudiante = ? ORDER BY pe.fecha_inicio ASC;
+        WHERE ar.estudiante_id = ? ORDER BY pe.fecha_inicio ASC;
         `;
 
-        const [notas]: any = await db.execute(query, [nombre]);
+        const [notas]: any = await db.execute(query, [id]);
 
         if (notas.length === 0) {
         return NextResponse.json(

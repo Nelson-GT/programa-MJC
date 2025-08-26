@@ -9,8 +9,6 @@ import {
   Image,
 } from "@react-pdf/renderer";
 
-// Define los estilos del documento PDF.
-// Cada propiedad corresponde a una clase de Tailwind o un estilo CSS.
 const styles = StyleSheet.create({
   page: {
     padding: 25,
@@ -88,14 +86,12 @@ const styles = StyleSheet.create({
   fieldLabel: {
     fontWeight: "bold",
     marginRight: 4,
-    // Permite que el texto no se corte
     flexShrink: 0,
     fontSize: 10,
   },
   fieldLabelSmall: {
     fontWeight: "bold",
     marginRight: 4,
-    // Permite que el texto no se corte
     flexShrink: 0,
     fontSize: 8,
   },
@@ -115,19 +111,19 @@ const styles = StyleSheet.create({
   // ESTILOS DE FIRMA ACTUALIZADOS
   signatureContainer: {
     marginTop: 2,
-    alignItems: "flex-end", // Alinea todo el bloque a la derecha
+    alignItems: "flex-end",
   },
   signatureRow: {
     flexDirection: "row",
-    alignItems: "flex-end", // Alinea el texto y la línea
+    alignItems: "flex-end",
     marginTop: 15,
   },
   signatureLabel: {
     fontSize: 10,
-    marginRight: 5, // Espacio entre el texto y la línea
+    marginRight: 5,
   },
   signatureLine: {
-    width: 200, // Ancho de la línea de firma
+    width: 200,
     borderBottomWidth: 1,
     borderBottomColor: "#4B5563",
   },

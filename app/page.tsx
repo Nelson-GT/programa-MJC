@@ -21,7 +21,7 @@ export default function Home() {
       <Estadistica></Estadistica>
       <Alianza /> {/* Alianzas */}
       <Reseña /> {/* reseña histórica */} 
-      <Mision_vision></Mision_vision>
+      <Mision_vision />
       <Programas /> {/* Forma parte de nuestros programas */}
       <Footer />
     </div>

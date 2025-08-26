@@ -3,11 +3,11 @@ import ContadorConReinicio from "@/components/ContadorAceleradoSimple"
 const Mision_vision = () => (
     <div className=" pb-10">
         <div className="container mx-auto px-4">
-            <div class="bg-white rounded-3xl shadow-xl p-8 mb-8 mx-auto max-w-3x2 text-center">
-                <h2 class="text-4xl font-extrabold bg-clip-text text-transparent   pb-1 bg-gradient-to-r from-[#A4131A] to-[#CB9318] mb-4">
+            <div className="bg-white rounded-3xl shadow-xl p-8 transform transition duration-500 hover:scale-105 hover:shadow-2xl flex flex-col items-center justify-between w-full mx-auto lg:mx-0 mb-8">
+                <h2 className="text-4xl font-extrabold bg-clip-text text-transparent   pb-1 bg-gradient-to-r from-[#A4131A] to-[#CB9318] mb-4">
                     Objetivo General:
                 </h2>
-                <p class="text-gray-700 text-lg leading-relaxed">
+                <p className="text-gray-700 text-lg leading-relaxed">
                     Ejecutar una propuesta educativa integral en el campo de la formación musical
                     dentro de la OSC, que contemple los niveles inicial, medio y avanzado, impartida
                     con altos niveles de calidad y creatividad dentro de un clima de enseñanza-
@@ -16,7 +16,7 @@ const Mision_vision = () => (
                     prepararlos para su incorporación a los estudios del nivel profesional o universitario.
                 </p>
             </div>
-            <h2 class="text-4xl font-extrabold bg-clip-text text-transparent pb-1 bg-gradient-to-r from-[#A4131A] to-[#CB9318] mb-4 text-center">
+            <h2 className="text-4xl font-extrabold bg-clip-text text-transparent pb-1 bg-gradient-to-r from-[#A4131A] to-[#CB9318] mb-4 text-center">
                     Objetivos específicos:
                 </h2>
             <div className="flex flex-col lg:flex-row items-stretch justify-center gap-8">

@@ -1,6 +1,6 @@
 "use client";
 import Head from "next/head";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Brand from "@/components/Brand";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Select from "@/components/ui/Select";
 
 export default function index() {
+  const hasFetched = useRef(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [rifError, setRifError] = useState("")
   const [rifRepresentateError, setRifRepresentanteError] = useState("")
@@ -238,17 +239,33 @@ export default function index() {
           genero: genero || "",
           cedula: cedula || "",
           fecha_nacimiento: fechaNacimiento || "",
-          email: email || "",
-          direccion_residencial: direccion || "",
-          telefono: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
-          emergencia_nombre:contactoEmergencia || "",
-          numeroEmergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
-          reperesentante_nombre: representanteNombre || "",
-          reperesentante_ci: representanteCI || "",
-          reperesentante_parentesco: parentesco || "",
-          representanteTelefono: (representanteCodigoTelefono + representanteTelefono) || "",
-          reperesentante_profesion: representanteProfesion || "",
+          correo_electronico: email || "",
+          direccion: direccion || "",
+          telefono_estudiantes: (CodigoTelefonoEstudiante + telefonoEstudiante) || "",
+          rif: rif || "",
+          institucion_educacional: institucion || "",
+          ocupacion: ocupacion || "",
+          profesion: profesion || "",
+          lugar_trabajo: lugarTrabajo || "",
+          alergico_a: alergias || "",
+          antecedentes: antecedentes || "",
+          especificacion_antecedentes: alergiasEspecificadas || "",
+          nombre_emergencia: contactoEmergencia || "",
+          numero_emergencia: (codigonumeroEmergencia + numeroEmergencia) || "",
+          nombre_representante: representanteNombre || "",
+          cedula_representante: representanteCI || "",
+          parentesco: parentesco || "",
+          telefono_representante: (representanteCodigoTelefono + representanteTelefono) || "",
+          ocupacion_representante: representanteOcupacion || "",
+          profesion_representante: representanteProfesion || "",
+          lugar_trabajo_representante: representanteLugarTrabajo || "",
+          direccion_representante: representanteDireccion || "",
+          rif_representante: representanteRIF || "",
+          email_representante: representanteEmail || "",
           instrumentos: instrumentosData || "",
+          teoricas: teoricasData || "",
+          otros: otrosData || "",
+          autorizacion: autorizacion || "",
         }),
       })
 
@@ -292,12 +309,17 @@ export default function index() {
   const [catedraInstrumentos, setCatedrasInstrumentos] = useState<string[]>([]);
   const [catedraTeoricas, setCatedrasTeoricas] = useState<string[]>([]);
   const [catedraOtros, setCatedrasOtros] = useState<string[]>([]);
+  const [dataInstrumentos, setDataInstrumentos] = useState<any>(null);
+
   const fetchCatedras = async () => {
     try {
       const response = await fetch(`/api/catedras`);
       const data = await response.json();
-      console.log(data.message)
+      setDataInstrumentos(data);
+      
+      if (catedraOtros.length === 0) {
       data.data.forEach((catedra:any) => {
+        
         switch (catedra.tipo) {
           case "instrumento":
             setCatedrasInstrumentos(prev => [...prev, catedra.nombre])
@@ -305,22 +327,29 @@ export default function index() {
           case "teorica":
             setCatedrasTeoricas(prev => [...prev, catedra.nombre])
             return
-          case "otro":
+          case "grupal":
             setCatedrasOtros(prev => [...prev, catedra.nombre])
             return
           default:
             setCatedrasOtros(prev => [...prev, catedra.nombre])
         }
+      });
+      data.grupales.forEach((catedra:any) => {
+        setCatedrasOtros(prev => [...prev, catedra.nombre])
       })
+      }
     } catch (err) {
       console.error('Error:', err);
     }
   };
-  
-    useEffect(() => {
-      fetchCatedras();
-    }, []);
-  
+  useEffect(() => {
+    if (hasFetched.current) {
+      return;
+    }
+    fetchCatedras();
+    hasFetched.current = true;
+  }, []);
+
   return (
     <div className="fondo">
       <Head>
@@ -589,7 +618,7 @@ export default function index() {
                 <label className='font-medium'>Alérgico(a) a *</label>
                 <Input
                   required
-                  value={"Nada"}
+                  placeholder="Nada"
                   type='text'
                   className='w-full mt-3 focus:border-blue-600'
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setalergias(e.target.value)}
@@ -831,7 +860,7 @@ export default function index() {
 
             {/* Instrumentos dinámicos */}
             {(() => {
-
+              
               // Renderizado de campos dinámicos
               return (
                 <>
@@ -883,7 +912,7 @@ export default function index() {
                           <Select
                             className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                             name={`instrumento-${item.id}`}
-                            onChange={(e) => handleChangeInstrumento(item.id, e.target.value)}
+                            onChange={(e) => handleChangeTeoricas(item.id, e.target.value)}
                           >
                             <option value=''>Seleccione una opción</option>
                             {catedraTeoricas.map((catedra, i) => (
@@ -922,7 +951,7 @@ export default function index() {
                           <Select
                             className='w-full border-gray-300 focus:border-blue-600 focus:ring-blue-600 rounded-lg'
                             name={`instrumento-${item.id}`}
-                            onChange={(e) => handleChangeInstrumento(item.id, e.target.value)}
+                            onChange={(e) => handleChangeOtros(item.id, e.target.value)}
                           >
                             <option value=''>Seleccione una opción</option>
                             {catedraOtros.map((catedra, i) => (

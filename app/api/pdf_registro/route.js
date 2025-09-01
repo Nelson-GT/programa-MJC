@@ -316,7 +316,7 @@ const MyDocument = ({ data }) => (
         <View style={styles.fieldRow}>
           <View style={{ ...styles.fieldSubRow, width: '50%' }}>
             <Text style={styles.fieldLabel}>Instrumento(s):</Text>
-            <Text style={styles.fieldValue}>{data.instrumentosData}</Text>
+            <Text style={styles.fieldValue}>{data.instrumentosData} </Text>
           </View>
           <View style={{ ...styles.fieldSubRow, width: '50%' }}>
             <Text style={styles.fieldLabel}>Docente(s):</Text>
@@ -326,7 +326,7 @@ const MyDocument = ({ data }) => (
         <View style={styles.fieldRow}>
           <View style={{ ...styles.fieldSubRow, width: '50%' }}>
             <Text style={styles.fieldLabel}>Teóricas(s):</Text>
-            <Text style={styles.fieldValue}>{data.teoricasData}</Text>
+            <Text style={styles.fieldValue}>{data.teoricasData} </Text>
           </View>
           <View style={{ ...styles.fieldSubRow, width: '50%' }}>
             <Text style={styles.fieldLabel}>Docente(s):</Text>
@@ -336,7 +336,7 @@ const MyDocument = ({ data }) => (
         <View style={styles.fieldRow}>
           <View style={{ ...styles.fieldSubRow, width: '50%' }}>
             <Text style={styles.fieldLabel}>Otros(s):</Text>
-            <Text style={styles.fieldValue}>{data.otrosData}</Text>
+            <Text style={styles.fieldValue}>{data.otrosData} </Text>
           </View>
           <View style={{ ...styles.fieldSubRow, width: '50%' }}>
             <Text style={styles.fieldLabel}>Docente(s):</Text>

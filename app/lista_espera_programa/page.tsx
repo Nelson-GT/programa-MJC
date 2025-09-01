@@ -9,6 +9,15 @@ export default function ListaEspera() {
     nombre: string;
     fecha_nacimiento: string;
     cedula: string;
+    rif: string;
+    institucion_educacional: string;
+    ocupacion: string;
+    profesion: string;
+    lugar_trabajo: string;
+    alergico_a: string;
+    antecedentes: string;
+    especificacion_antecedentes: string;
+    autorizacion: string;
     genero: string;
     instrumento: string;
     telefono: string;
@@ -22,7 +31,12 @@ export default function ListaEspera() {
     telefono_representante: string;
     ocupacion_representante: string;
     estado: number;
-    teorica?: string;
+    rif_representante: string;
+    email_representante: string;
+    profesion_representante?: string;
+    lugar_trabajo_representante?: string;
+    direccion_representante?: string;
+    teoricas?: string;
     otros?: string;
   }
 
@@ -88,19 +102,33 @@ export default function ListaEspera() {
           edad: calcularEdad(estudiante.fecha_nacimiento) || "",
           sexo: estudiante.genero || "",
           cedula: estudiante.cedula || "",
+          rif: estudiante.rif || "",
           telefono: estudiante.telefono || "",
-          direccion: estudiante.direccion || "",
+          institucion: estudiante.institucion_educacional || "",
+          ocupacion: estudiante.ocupacion || "",
+          profesion: estudiante.profesion || "",
+          lugarTrabajo: estudiante.lugar_trabajo || "",
           email: estudiante.email || "",
-          contactoEmergencia: estudiante.nombre_emergencia || "",
-          numeroEmergencia: estudiante.numero_emergencia || "",
+          direccion: estudiante.direccion || "",
+          alergias: estudiante.alergico_a || "",
+          antecedentes: estudiante.antecedentes || "",
+          alergiasEspecificadas: estudiante.especificacion_antecedentes || "",
           representanteNombre: estudiante.nombre_representante || "",
           representanteCI: estudiante.cedula_representante || "",
+          representanteRif: estudiante.rif_representante || "",
           parentesco: estudiante.parentesco || "",
           representanteTelefono: estudiante.telefono_representante || "",
           representanteOcupacion: estudiante.ocupacion_representante || "",
+          representanteProfesion: estudiante.profesion_representante || "",
+          representanteLugarTrabajo: estudiante.lugar_trabajo_representante || "",
+          representanteDireccion: estudiante.direccion_representante || "",
+          representanteEmail: estudiante.email_representante || "",
+          contactoEmergencia: estudiante.nombre_emergencia || "",
+          numeroEmergencia: estudiante.numero_emergencia || "",
           instrumentosData: estudiante.instrumento || "",
-          autorizacion: "Si",
-          firmaCedula: "Prueba de firma y cédula",
+          teoricasData: estudiante.teoricas || "",
+          otrosData: estudiante.otros || "",
+          autorizacion: estudiante.autorizacion || "",
         }),
       });
 
@@ -244,7 +272,7 @@ export default function ListaEspera() {
                     <td className="px-4 py-2 border-b text-center">{calcularEdad(estudiante.fecha_nacimiento)}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.cedula || '—'}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.instrumento || '—'}</td>
-                    <td className="px-4 py-2 border-b text-center">{estudiante.teorica || '—'}</td>
+                    <td className="px-4 py-2 border-b text-center">{estudiante.teoricas || '—'}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.otros || '—'}</td>
                     <td className="px-4 py-2 border-b text-center flex justify-center space-x-2">
                       <Button 

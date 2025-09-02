@@ -160,7 +160,7 @@ export default function Estudiante() {
                                     <div className="text-gray-600"><b>Email:</b> {estudiante.correo_electronico}</div>
                                 </div>
                                 <div className="flex-1 mb-4 md:mb-0">
-                                    <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante.instrumento}</div>
+                                    <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {(estudiante.instrumento === 'Si' || estudiante.instrumento === null ) ? 'No registrado' : estudiante.instrumento}</div>
                                     <div className="text-gray-600 mb-1"><b>Teóricas:</b> Materias teoricas</div>
                                     <div className="text-gray-600"><b>Otros:</b> Otras materias</div>
                                 </div>

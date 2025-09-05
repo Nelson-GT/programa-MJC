@@ -151,7 +151,7 @@ export default function ListaEspera() {
 
   const handleRegistrar = async (estudiante: EstudianteListaEspera): Promise<{ id: number } | undefined> => {
     try {
-      const res = await fetch("api/estudiante", {
+      const res = await fetch("/api/estudiante", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -209,20 +209,7 @@ export default function ListaEspera() {
   const handleAceptarEstudiante = async (idEstudiante: number, cedula:string, estudiante: EstudianteListaEspera) => {
     try {
       const id_estudiante = await handleRegistrar(estudiante);
-      console.log(`Antes de crear usuario: ${id_estudiante}`)
-      const res2 = await fetch("/api/usuario", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id_estudiante: id_estudiante,
-        }),
-      });
-      console.log("Después de crear usuario")
-
-      if (!res2.ok) throw new Error("Error creando el usuario");
-      const res = await fetch('api/lista_espera', {
+      const res = await fetch('/api/lista_espera', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -247,7 +234,7 @@ export default function ListaEspera() {
 
   const handleRechazarEstudiante = async (idEstudiante: number) => {
     try {
-      const res = await fetch('api/lista_espera', {
+      const res = await fetch('/api/lista_espera', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -297,14 +284,14 @@ export default function ListaEspera() {
           <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
             <thead>
               <tr>
-                <th className="px-4 py-2 bg-gray-100">ID</th>
-                <th className="px-4 py-2 bg-gray-200">Nombre</th>
-                <th className="px-4 py-2 bg-gray-100">Edad</th>
-                <th className="px-4 py-2 bg-gray-200">Cédula</th>
-                <th className="px-4 py-2 bg-gray-100">Instrumento</th>
-                <th className="px-4 py-2 bg-gray-200">Teórica</th>
-                <th className="px-4 py-2 bg-gray-100">Otros</th>
-                <th className="px-4 py-2 bg-gray-200">Acciones</th>
+                <th className="px-4 py-2 bg-gray-100 w-1/18">ID</th>
+                <th className="px-4 py-2 bg-gray-200 w-1/6">Nombre</th>
+                <th className="px-4 py-2 bg-gray-100 w-1/18">Edad</th>
+                <th className="px-4 py-2 bg-gray-200 w-1/18">Cédula</th>
+                <th className="px-4 py-2 bg-gray-100 w-7/45">Instrumento</th>
+                <th className="px-4 py-2 bg-gray-200 w-7/45">Teórica</th>
+                <th className="px-4 py-2 bg-gray-100 w-7/45">Otros</th>
+                <th className="px-4 py-2 bg-gray-200 w-1/5">Acciones</th>
               </tr>
             </thead>
             <tbody>

@@ -2,7 +2,7 @@ import ContadorConReinicio from "@/components/ContadorAceleradoSimple"
 
 const Mision_vision = () => (
     <div className=" pb-10">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-15">
             <div className="bg-white rounded-3xl shadow-xl p-8 transform transition duration-500 hover:scale-105 hover:shadow-2xl flex flex-col items-center justify-between w-full mx-auto lg:mx-0 mb-8">
                 <h2 className="text-4xl font-extrabold bg-clip-text text-transparent   pb-1 bg-gradient-to-r from-[#A4131A] to-[#CB9318] mb-4">
                     Objetivo General:

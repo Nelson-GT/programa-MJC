@@ -26,7 +26,7 @@ export async function POST(req: NextRequest,res: NextResponse) {
     const { email, password } = await req.json();
 
     const [estudianteRows]: any = await db.query(
-      'SELECT password, id_estudiante, remember_token FROM users WHERE username = ? AND role_id = 3',
+      'SELECT password, id_estudiante, remember_token, role_id FROM users WHERE username = ?',
       [email]
     );
 
@@ -48,17 +48,27 @@ export async function POST(req: NextRequest,res: NextResponse) {
     }
     const token = await new SignJWT({ 
       userId: estudiante.id_estudiante,
-      role: 'student',
+      role_id: estudiante.role_id,
       remember_token: estudiante.remember_token,
     })
       .setProtectedHeader({ alg: JWT_CONFIG.algorithm })
       .setIssuedAt()
       .setExpirationTime(JWT_CONFIG.expiresIn)
       .sign(JWT_CONFIG.secret);
+
+    let url;
+    console.log(`id: ${estudiante.id_estudiante}, rol : ${estudiante.role_id}`)
+    if (estudiante.role_id === 1) {
+      url = `/admin`;
+    } else {
+      url = `/usuario/${estudiante.id_estudiante}`;
+    }
+
     const response = NextResponse.json(
       { 
         message: 'Login exitoso', 
-        userId: estudiante.id_estudiante 
+        userId: estudiante.id_estudiante,
+        redirectUrl: url 
       },
       { status: 200 }
     );

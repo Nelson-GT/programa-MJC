@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
 import db from '@/lib/db';
+import { crearUsuario } from "@/app/api/usuario/route";
 
 export async function GET(req: NextRequest) {
     try {
@@ -133,6 +134,13 @@ export async function POST(req: Request) {
         console.log('Valores para la consulta:', values);
         const [result]: any = await db.execute(query, values);
         const insertId = result?.insertId ?? null;
+        try {
+            // Llama a la lógica directamente, sin necesidad de fetch
+            const result = await crearUsuario(insertId);
+            console.log(`Usuario creado para el estudiante ${insertId}:`, result);
+        } catch (creationError:any) {
+            console.error(`Error al crear usuario para el estudiante ${insertId}:`, creationError.message);
+        }
         return NextResponse.json({ message: 'Estudiante registrado', id: insertId });
     } catch (error) {
         console.error('Error al insertar estudiante:', error);

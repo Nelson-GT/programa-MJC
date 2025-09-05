@@ -10,9 +10,8 @@ const Navbar = () => {
     const menuBtnEl = useRef<HTMLButtonElement>(null) as React.RefObject<HTMLButtonElement>;
 
     const navigation = [
-        { name: 'Sobre Nosotros', href: '#' },
-        { name: 'Inscripción', href: '#' },
-        { name: 'Preguntas Frecuente', href: '#' },
+        { name: 'Sobre Nosotros', href: '/' },
+        { name: 'Inscripción', href: '/registro' },
     ];
 
     useEffect(() => {
@@ -54,8 +53,8 @@ const Navbar = () => {
                 >
                     <ul className="justify-center items-center space-y-6 md:flex md:space-x-6 md:space-y-0">
                     {navigation.map((item, idx) => (
-                        <li key={idx} className="hover:text-gray-900 text-sm">
-                        <Link href={item.href} className="block" scroll={false} >
+                        <li key={idx} className="transform transition duration-100 hover:scale-105 text-sm">
+                        <Link href={item.href} className="block font-bold" scroll={false} >
                             {item.name}
                         </Link>
                         </li>
@@ -64,7 +63,7 @@ const Navbar = () => {
                     <div className="flex-1 gap-x-6 items-center justify-end mt-6 space-y-6 md:flex md:space-y-0 md:mt-0">
                     <NavLink
                         href="/login"
-                        className="flex items-center justify-center gap-x-1 text-sm text-white font-medium bg-[#AD8A1F] hover:bg-[#9a7d08] active:bg-[#5e5026] md:inline-flex"
+                        className="flex items-center justify-center gap-x-1 text-sm text-white font-bold bg-[#AD8A1F] hover:bg-[#9a7d08] active:bg-[#5e5026] md:inline-flex"
                     >
                         <User className='h-6 w-6'/>
                         Mi cuenta

@@ -228,7 +228,7 @@ export default function index() {
       const instrumentosData = instrumentos.map(item => item.valor).join(", ");
       const teoricasData = teoricas.map(item => item.valor).join(", ");
       const otrosData = otros.map(item => item.valor).join(", ");
-      const res = await fetch("api/aspirante", {
+      const res = await fetch("/api/aspirante", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

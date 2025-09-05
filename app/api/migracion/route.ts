@@ -26,9 +26,9 @@ export async function GET() {
         });
     } catch (error) {
         console.error('Ocurrio un error en la migración:', error);
-          return NextResponse.json(
-              { message: 'Error del servidor', error },
-              { status: 500 }
-          );
+            return NextResponse.json(
+                { message: 'Error del servidor', error },
+                { status: 500 }
+            );
     }
 }

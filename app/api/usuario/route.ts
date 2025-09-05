@@ -52,11 +52,6 @@ export async function POST(req: NextRequest) {
     const { correo_electronico, nombre, cedula, cedula_representante, created_at, genero, fecha_nacimiento } = estudiante[0];
     let añoRegistro = new Date(created_at).getFullYear().toString().slice(-2);
     let usernameToInsert = nombre + añoRegistro;
-    /*if (correo_electronico === null) {
-      usernameToInsert = nombre;
-    } else {
-      usernameToInsert = correo_electronico;
-    }*/
 
     let passwordToInsert;
     if (cedula === null || cedula.toUpperCase() === 'N/A' || cedula.toUpperCase() === 'NA' || cedula.startsWith("000")) {
@@ -127,9 +122,10 @@ export async function crearUsuario(id_estudiante: number) {
 
         const { correo_electronico, nombre, cedula, cedula_representante, created_at, genero, fecha_nacimiento } = estudiante[0];
 
-        // Se usa created_at en lugar de fecha_inscripcion
-        let usernameToInsert = nombre + (created_at ? created_at.toISOString().slice(0, 10).replace(/-/g, '') : '');
-
+        let añoRegistro = new Date(created_at).getFullYear().toString().slice(-2);
+        let usernameToInsert = nombre + añoRegistro;
+        usernameToInsert = usernameToInsert.toLowerCase().replaceAll(' ', '');
+        
         let passwordToInsert;
         if (cedula === null || cedula.toUpperCase() === 'N/A' || cedula.toUpperCase() === 'NA' || cedula.startsWith("000")) {
             if (cedula_representante === null || cedula_representante.toUpperCase() === 'N/A' || cedula_representante.toUpperCase() === 'NA') {

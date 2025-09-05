@@ -29,12 +29,13 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     });
     const result = await res.json();
-    if (!res.ok){ 
+    console.log(result)
+    if (!res.ok) { 
       setErrorLogin(result.message)
       setShowModal(true);
-    };
-    alert
-    router.push(`/usuario/${result.userId}`);
+    } else {
+      router.push(`${result.redirectUrl}`);
+    }
   };
 
   return (

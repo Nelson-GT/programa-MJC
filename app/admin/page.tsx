@@ -25,7 +25,7 @@ export default function Login() {
         <div className="flex flex-col max-w-sm w-full text-gray-600 gap-5">
             <Button
             className="bg-blue-600 text-white rounded-xl hover:bg-blue-800"
-            onClick={() => window.location.href = "/lista_espera_programa"}
+            onClick={() => window.location.href = "/admin/lista_espera_programa"}
             >
             Lista de Espera
             </Button>

@@ -9,9 +9,8 @@ const Navbar = () => {
     const menuBtnEl = useRef<HTMLButtonElement>(null) as React.RefObject<HTMLButtonElement>;
 
     const navigation = [
-        { name: 'Sobre Nosotros', href: '#' },
-        { name: 'Inscripción', href: '#' },
-        { name: 'Preguntas Frecuente', href: '#' },
+        { name: 'Sobre Nosotros', href: '/' },
+        { name: 'Inscripción', href: '/registro' },
     ];
 
     useEffect(() => {

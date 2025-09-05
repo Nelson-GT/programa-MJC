@@ -10,14 +10,11 @@ export default function Login() {
   const router = useRouter()
   const [userName, setUserName] = useState("")
   const [password, setPassword] = useState("")
-
+  const [errorLogin, setErrorLogin] = useState("")
+  const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    
-
-
     if (userName === "admin" && password === "admin") {
       router.push("/admin")
     } else {
@@ -32,7 +29,11 @@ export default function Login() {
       body: JSON.stringify({ email, password }),
     });
     const result = await res.json();
-    if (!res.ok) throw new Error(result.message);
+    if (!res.ok){ 
+      setErrorLogin(result.message)
+      setShowModal(true);
+    };
+    alert
     router.push(`/usuario/${result.userId}`);
   };
 
@@ -89,6 +90,24 @@ export default function Login() {
           </form>
         </div>
       </div>
+      {/* Modal para rechazar */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm">
+          <div className="flex flex-col item-center justify-center bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
+            <p className="text-center mb-6 font-semibold text-red-600 text-lg">
+              {errorLogin}
+            </p>
+            <div className="flex justify-center items-center">
+              <Button
+                className="w-1/2 bg-gray-200 hover:bg-gray-300 rounded shadow-lg"
+                onClick={() => setShowModal(false)}
+              >
+                <span className="font-bold text-">Volver</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

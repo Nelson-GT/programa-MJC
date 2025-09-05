@@ -21,7 +21,7 @@ async function comparePassword(password: string, hash: string) {
   return result;
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest,res: NextResponse) {
   try {
     const { email, password } = await req.json();
 
@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
     }
     const isMatch = await comparePassword(password, estudiante.password);
     if (!isMatch) {
+
       return NextResponse.json(
         { message: 'Contraseña incorrecta' }, 
         { status: 401 }

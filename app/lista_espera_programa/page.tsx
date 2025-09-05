@@ -19,7 +19,7 @@ export default function ListaEspera() {
     especificacion_antecedentes: string;
     autorizacion: string;
     genero: string;
-    instrumento: string;
+    instrumentos: string;
     telefono: string;
     email: string;
     direccion: string;
@@ -53,8 +53,6 @@ export default function ListaEspera() {
       setLoading(true);
       setError(null);
       const response = await fetch(`/api/lista_espera`);
-      /*const response = await fetch('http://localhost:3200/api/lista_espera'); /* ------------------------------------------------------ */
-      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Error al cargar la lista de espera');
@@ -79,7 +77,6 @@ export default function ListaEspera() {
     fecha = fecha.replaceAll("/","-")
     const datos = fecha.split("-")
     const nacimiento = new Date(`${datos[1]}-${datos[0]}-${datos[2]}`);
-    console.log(nacimiento)
     const hoy = new Date();
     let edad = hoy.getFullYear() - nacimiento.getFullYear();
     const m = hoy.getMonth() - nacimiento.getMonth();
@@ -125,7 +122,7 @@ export default function ListaEspera() {
           representanteEmail: estudiante.email_representante || "",
           contactoEmergencia: estudiante.nombre_emergencia || "",
           numeroEmergencia: estudiante.numero_emergencia || "",
-          instrumentosData: estudiante.instrumento || "",
+          instrumentosData: estudiante.instrumentos || "",
           teoricasData: estudiante.teoricas || "",
           otrosData: estudiante.otros || "",
           autorizacion: estudiante.autorizacion || "",
@@ -152,24 +149,79 @@ export default function ListaEspera() {
     }
   };
 
-  const handleAceptarEstudiante = async (idEstudiante: number, cedula:string) => {
+  const handleRegistrar = async (estudiante: EstudianteListaEspera): Promise<{ id: number } | undefined> => {
     try {
-      // Aquí iría la lógica para aceptar al estudiante
-      // Por ejemplo, crear usuario y actualizar estado
+      const res = await fetch("api/estudiante", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nombre: estudiante.nombre || "",
+          genero: estudiante.genero || "",
+          cedula: estudiante.cedula || "",
+          fecha_nacimiento: estudiante.fecha_nacimiento || "",
+          correo_electronico: estudiante.email || "",
+          direccion: estudiante.direccion || "",
+          telefono_estudiantes: estudiante.telefono || "",
+          rif: estudiante.rif || "",
+          institucion_educacional: estudiante.institucion_educacional || "",
+          ocupacion: estudiante.ocupacion || "",
+          profesion: estudiante.profesion || "",
+          lugar_trabajo: estudiante.lugar_trabajo || "",
+          alergico_a: estudiante.alergico_a || "",
+          antecedentes: estudiante.antecedentes || "",
+          especificacion_antecedentes: estudiante.especificacion_antecedentes || "",
+          nombre_emergencia: estudiante.nombre_emergencia || "",
+          numero_emergencia: estudiante.numero_emergencia || "",
+          nombre_representante: estudiante.nombre_representante || "",
+          cedula_representante: estudiante.cedula_representante || "",
+          parentesco: estudiante.parentesco || "",
+          telefono_representante: estudiante.telefono_representante || "",
+          ocupacion_representante: estudiante.ocupacion_representante || "",
+          profesion_representante: estudiante.profesion_representante || "",
+          lugar_trabajo_representante: estudiante.lugar_trabajo_representante || "",
+          direccion_representante: estudiante.direccion_representante || "",
+          rif_representante: estudiante.rif_representante || "",
+          email_representante: estudiante.email_representante || "",
+          instrumentos: estudiante.instrumentos || "",
+          teoricas: estudiante.teoricas || "",
+          otros: estudiante.otros || "",
+          autorizacion: estudiante.autorizacion || "",
+        }),
+      })
+
+      const resultado = await res.json();
+      if (!res.ok) {
+        console.log(`Ha ocurrido un Error: ${resultado.message}`)
+        alert("Ha ocurrido un Error. Por favor, intentelo más tarde");
+        return undefined
+      }
+      console.log("Registro exitoso")
+      return resultado.id;
+    } catch (err) {
+      console.error(err);
+      console.log('Error al conectar con el servidor');
+      return undefined;
+    }
+  }
+
+  const handleAceptarEstudiante = async (idEstudiante: number, cedula:string, estudiante: EstudianteListaEspera) => {
+    try {
+      const id_estudiante = await handleRegistrar(estudiante);
+      console.log(`Antes de crear usuario: ${id_estudiante}`)
       const res2 = await fetch("/api/usuario", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id_estudiante: idEstudiante,
-          contraseña: cedula || "123456789",
+          id_estudiante: id_estudiante,
         }),
       });
+      console.log("Después de crear usuario")
 
       if (!res2.ok) throw new Error("Error creando el usuario");
-
-      /*const res = await fetch('http://localhost:3200/api/lista_espera', {*/
       const res = await fetch('api/lista_espera', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -195,8 +247,6 @@ export default function ListaEspera() {
 
   const handleRechazarEstudiante = async (idEstudiante: number) => {
     try {
-      // Aquí iría la lógica para rechazar al estudiante
-      /* const res = await fetch('http://localhost:3200/api/lista_espera', { */
       const res = await fetch('api/lista_espera', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -271,10 +321,10 @@ export default function ListaEspera() {
                     <td className="px-4 py-2 border-b text-center">{estudiante.nombre}</td>
                     <td className="px-4 py-2 border-b text-center">{calcularEdad(estudiante.fecha_nacimiento)}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.cedula || '—'}</td>
-                    <td className="px-4 py-2 border-b text-center">{estudiante.instrumento || '—'}</td>
+                    <td className="px-4 py-2 border-b text-center">{estudiante.instrumentos || '—'}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.teoricas || '—'}</td>
                     <td className="px-4 py-2 border-b text-center">{estudiante.otros || '—'}</td>
-                    <td className="px-4 py-2 border-b text-center flex justify-center space-x-2">
+                    <td className="px-4 py-2 border-b text-center ">
                       <Button 
                         className="px-2 py-1 mr-2 rounded-full hover:bg-gray-100"
                         onClick={() => handleGenerarPDF(estudiante)}
@@ -342,7 +392,10 @@ export default function ListaEspera() {
                 className="w-[48%] bg-green-600 text-white hover:bg-green-400 rounded"
                 onClick={() => {
                   setShowModalConfirm(false);
-                  handleAceptarEstudiante(selectedEstudiante, estudianteCI);
+                  const estudiante = estudiantes.find(e => e.id === selectedEstudiante);
+                    if (estudiante) {
+                    handleAceptarEstudiante(selectedEstudiante, estudianteCI, estudiante);
+                    }
                 }}
               >
                 Aceptar
@@ -384,4 +437,4 @@ export default function ListaEspera() {
       )}
     </>
   );
-}``
+}

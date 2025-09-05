@@ -20,22 +20,12 @@ type Nota = {
 interface Estudiante {
     id: number;
     nombre: string;
-    genero: string;
     cedula: string;
-    fecha_nacimiento: string;
-    correo_electronico: string;
-    direccion: string;
-    fecha_ingreso: string;
-    instrumento: string;
-    codigo_instrumento: string;
-    nombre_representante: string;
-    ocupacion_representante?: string;
-    parentesco?: string;
-    cedula_representante: string;
     telefono_estudiantes: string;
-    reperesentante_telefono: string;
-    nombre_emergencia: string;
-    numero_emergencia: string;
+    correo_electronico: string;
+    instrumentos: string;
+    teoricas: string;
+    otros: string;
     activo: number;
 }
 
@@ -160,13 +150,13 @@ export default function Estudiante() {
                                     <div className="text-gray-600"><b>Email:</b> {estudiante.correo_electronico}</div>
                                 </div>
                                 <div className="flex-1 mb-4 md:mb-0">
-                                    <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {(estudiante.instrumento === 'Si' || estudiante.instrumento === null ) ? 'No registrado' : estudiante.instrumento}</div>
-                                    <div className="text-gray-600 mb-1"><b>Teóricas:</b> Materias teoricas</div>
-                                    <div className="text-gray-600"><b>Otros:</b> Otras materias</div>
+                                    <div className="text-gray-600 mb-1"><b>Instrumento Principal:</b> {estudiante.instrumentos? estudiante.instrumentos : "No registrado."}</div>
+                                    <div className="text-gray-600 mb-1"><b>Teóricas:</b> {estudiante.teoricas? estudiante.teoricas : "No registrado."} </div>
+                                    <div className="text-gray-600"><b>Otros:</b> {estudiante.otros? estudiante.otros : "No registrado."}</div>
                                 </div>
                                 <div className="flex-1">
                                     <div className="text-gray-600 mb-1"><b>Estatus Administrativo:</b> estatus</div>
-                                    <div className="text-gray-600"><b>Estatus Académico:</b> activo</div>
+                                    <div className="text-gray-600"><b>Estatus Académico:</b> {estudiante.activo === 1? "Activo" : "Inactivo"}</div>
                                 </div>
                             </div>
                         </div>

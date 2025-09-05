@@ -24,7 +24,9 @@ async function hashPassword(password:string) {
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("Creando usuario...")
     const { id_estudiante } = await req.json();
+    console.log("id_estudiante recibido:", id_estudiante);
 
     if (!id_estudiante) {
       return NextResponse.json(
@@ -48,8 +50,8 @@ export async function POST(req: NextRequest) {
     }
 
     const { correo_electronico, nombre, cedula, cedula_representante, created_at, genero, fecha_nacimiento } = estudiante[0];
-
-    let usernameToInsert = nombre + created_at?.toISOString().slice(0,10).replace(/-/g, ' ');
+    let añoRegistro = new Date(created_at).getFullYear().toString().slice(-2);
+    let usernameToInsert = nombre + añoRegistro;
     /*if (correo_electronico === null) {
       usernameToInsert = nombre;
     } else {

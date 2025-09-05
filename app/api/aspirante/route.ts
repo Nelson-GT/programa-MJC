@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         }
 
         const placeholders = ids.map(() => '?').join(', ');
-        const query = `SELECT * FROM estudiantes WHERE id IN (${placeholders})`;
+        const query = `SELECT * FROM aspirante WHERE id IN (${placeholders})`;
 
         const [rows]: any = await db.query(query, ids);
 
@@ -80,7 +80,7 @@ export async function POST(req: Request) {
             autorizacion,
         } = dataForDb;
 
-        const query = `INSERT INTO estudiantes 
+        const query = `INSERT INTO aspirantes
             (nombre, genero, cedula, fecha_nacimiento, correo_electronico, direccion, telefono_estudiantes, rif,
             institucion_educacional, ocupacion, profesion, lugar_trabajo, alergico_a, antecedentes,
             especificacion_antecedentes, 
@@ -126,13 +126,14 @@ export async function POST(req: Request) {
             autorizacion,
             new Date().toISOString().slice(0, 19).replace('T', ' '),
             new Date().toISOString().slice(0, 19).replace('T', ' '),
-            1
+            0
         ];
 
         console.log('Datos recibidos:', data);
         console.log('Valores para la consulta:', values);
         const [result]: any = await db.execute(query, values);
         const insertId = result?.insertId ?? null;
+        const [result2]: any = await db.execute(`INSERT INTO lista_espera (id_estudiante, estado) VALUES (?, 1)`, [insertId]);
         return NextResponse.json({ message: 'Estudiante registrado', id: insertId });
     } catch (error) {
         console.error('Error al insertar estudiante:', error);

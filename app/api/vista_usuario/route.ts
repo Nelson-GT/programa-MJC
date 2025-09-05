@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
         }
 
         const [rows]: any = await db.query(
-        'SELECT * FROM estudiantes WHERE id = ?',
+        'SELECT id, nombre, cedula, telefono_estudiantes, correo_electronico, instrumentos, teoricas, otros, activo FROM estudiantes WHERE id = ?',
         [id]
         );
 

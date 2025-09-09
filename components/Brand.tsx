@@ -2,7 +2,7 @@ import Image from "next/image"
 
 const Brand = ({ ...props }) => (
     <Image
-        src="/programa.webp"
+        src="/logo.png"
         alt="Logo Orquesta Sinfónica de Carabobo"
         {...props}
         width={50}
